@@ -18,3 +18,32 @@ Ultimately, with the above assessment, the goal of this project is to characteri
 
 #### Theory
 
+In order to generate networks, we must first define all of its properties such that the properties are understood.  First, speaking of nodes we define
+
+$\mathcal{V} = \{v_1, v_2, \dots , v_n\}$
+
+for $n \in \mathbb{N}$ such that $\mathcal{V}$ is the set of all nodes and $v_1$ and $v_2$ represent the first and second nodes, respectively.  The number of nodes $N$ is then just the cardinality of $\mathcal{V}$ such that $N = |\mathcal{V}|$ .  Then, for a single-layer Erdős–Rényi graph $G_{NP}$ (CITE), that is to say a two-dimensional graph with no coupling constant $D_x$ (CITE), this is defined as the adjacency matrix $A$ such that 
+
+$G_{NP} = A = \begin{bmatrix} A_{ij}\end{bmatrix}$
+
+for $ 0 \leq i, j < N$ .  Then, the number of elements in the adjacency would then be
+
+$|G_{NP}| = |A| = |N|\times |N|$
+
+Note that this is not the number of edges, but rather the number of all entries for this adjacency matrix or, in computer science terms, the size of the array.  From this point onward, we'll only refer to $G_{NP}$ as $A$.   We can then define the values of $A_{ij}$ such that
+
+$A_{ij} = \begin{cases} 1: (i, j) \in E \\ 0: (i, j) \notin E\end{cases}$
+
+where $E$ is the set of all edges such that 
+
+$E = \{(i, j): p_{ij} \leq p\}$
+
+for some particular edge probability $p_{ij}$ and a total edge probability $p$.  Basically, each entry of $A$, $A_{ij}$, has an associated probability $p_{ij}$ such that if it's less than the fixed parameter probability $p$ then there exists an edge.  We can then define thte total number of edges as
+
+$M = |E|$ 
+
+Therefore, the number of potential edges $P$, that is to say areas where edges don't exist such that they could exist if under some stochastic process, can be represented as 
+
+$P = \frac{|A|}{2} - M$
+
+since $|A|$ counts edges twice.  
