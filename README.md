@@ -1,1 +1,9 @@
-# MC_RandomNetworks-RaspiZero
+# Random Networks via Monte Carlo Simulations on the Raspberry Pi Zero W
+
+The purpose of this repository is to primarily explore Erdős–Rényi graphs (random networks) through the use of Monte Carlo methods.  A detailed explanation of what precisely a random network is can be found in _Theory_ of the documentation, as well as the merit of a Monte Carlo simulation.
+
+Otherwise, in order to run these simulations it is first necessary to create a random graph.  This is in the `generate_network.py` file, which contains the classes necessary to generate these objects.  A surface level dive into this `.py` file can be seen in the `network_analysis.ipynb` notebook.  Here, I show how to use the `.py` file, verify that the methods agree with numerical generalizations of a network, and then do some very facetious runtime complexity analysis.
+
+For now, this is all that I have.  In the future, I plan to do a deeper dive into first rewiring, to establish it as another random process by which Monte Carlo is applicable.  After that, entropy must be introduced as a medium for randomness.  Then, once all the random processes are pinpointed, I would like to begin the actual Monte Carlo simulations so that we can ascertain network properties and compare them to known formulations, possibly deriving approximations.
+
+In the end, I would like this to be entirely ran on the Pi Zero W.  Consider that networks take up both space and time, since they're N-dimensional structures, so minimizing the space-time complexity would be beneficial for other people, but also the current research I'm engaged in.  The work here also benefits my current research, as formalizing some functions allows for streamlined analysis.
