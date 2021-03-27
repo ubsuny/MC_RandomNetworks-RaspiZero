@@ -46,4 +46,27 @@ Therefore, the number of potential edges $P$, that is to say areas where edges d
 
 $P = \frac{|A|}{2} - M$
 
-since $|A|$ counts edges twice.  
+since $|A|$ counts edges twice.  TO-DO: talk about edge degree, how this relates to number of possible edes.
+
+
+
+#### Comparison to other Methods
+
+Although there aren't many other analytical methods that are similar to network theory, spectral theory [1] in particular, the one that stands out the most is principal component analysis (PCA) [2].  This family of algorithms in particular examines the eigenvalues and eigenvectors so that a fuller picture of the data is formed.  Typically, this is used to reduce down data to a scalable form such that loss of information is minimized.
+
+Network theory and, by extension, spectral theory is a bit better than PCA in some cases because it allows for a more complex relationship to be developed by the data.  That is to say, complex networks are able to encode very specific interactions between nodes, especially when multiple layers, a multilayer or multiplex network, are introduced.  Since PCA reduces these features down to only the eigenvectors and eigenvalues typically, many of these rich relationships are lost in translation.  
+
+Spectral theory is particularly important, especially with the introduction of Shannon entropy via von Neumann Entropy (VNE) [3].  This could be perhaps be treated as an extension of both PCA and network theory, since entropy takes on the form of its eigenvalues.  Regardless, VNE is far more common a tool of analysis in network theory than it is in PCA.  Really, it in itself is reducing data down to a single value, akin to PCA, but this is used rarely to more so describe the entire system, as opposed to its individual components.  Perturbation theory [3] is also useful in studying how the network changes under slight modifications to the network, something that PCA doesn't exactly cover.
+
+Nevertheless, it is the amount of information that can be gleaned from network theory that sets it above PCA.  The complex systems can also be captured, but at the cost of runtime complexity.  It is true that in general PCA is faster than network theory, since its main bound is calculating eigenvalues.  Whereas, with network theory, there are many methods from modularity, to rewiring, to edge ranking, which all have significant runtime complexities.  However, their availability as an analysis tool is more important than runtime, in a larger scale.  Of course, this may not be the case for the Raspberry Pi Zero W, but initial conditions can be set such that runtime complexity isn't a major factor.  
+
+
+
+#### References
+
+[1] De Domenico, M., & Biamonte, J. (2016). Spectral entropies As INFORMATION-THEORETIC tools for complex Network comparison. *Physical Review X,* *6*(4). doi:10.1103/physrevx.6.041062
+
+[2] Jolliffe, I. T., & Cadima, J. (2016). Principal component analysis: A review and recent developments. *Philosophical Transactions of the Royal Society A: Mathematical, Physical and Engineering Sciences,* *374*(2065), 20150202. doi:10.1098/rsta.2015.0202
+
+[3] Li, Z., Mucha, P. J., & Taylor, D. (2018). Network-Ensemble comparisons with Stochastic rewiring and Von Neumann entropy. *SIAM Journal on Applied Mathematics,* *78*(2), 897-920. doi:10.1137/17m1124218
+
