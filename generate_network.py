@@ -1,5 +1,6 @@
-from numpy import append, argwhere, array, diag, delete, ones, random, sum, triu
+from numpy import append, argwhere, arange, array, diag, delete, ones, random, sum, triu
 from matplotlib import pyplot as plt
+import networkx as nx
 
 class Erdos_Renyi_GNP:
     def __init__(self, N, p, A = None, self_edges = False):
@@ -62,6 +63,26 @@ class Erdos_Renyi_GNP:
         ax.set_ylabel('node ID, $y$', fontsize = 12)
         ax.set_xlabel('node ID, $x$', fontsize = 12)
         ax.xaxis.set_label_coords(0.5, 1.175)
+        
+        return fig, ax
+    
+    def plot_networkx(self, figsize = (4, 4), node_color = 'navy', node_alpha = 0.75, node_size = 100, edge_color = 'black', edge_alpha = 0.15):
+        
+        fig, ax = plt.subplots(1, 1, figsize = figsize)
+        
+        G = nx.Graph()
+        
+        G.add_nodes_from(arange(self.N))
+        G.add_edges_from(self.edges)
+        
+        pos = nx.spring_layout(G)
+        
+        nx.draw_networkx_nodes(G, pos = pos, node_color = node_color, node_size = node_size, alpha = node_alpha, ax = ax)
+        nx.draw_networkx_edges(G, pos = pos, edge_color = edge_color, alpha = edge_alpha, ax = ax)
+        
+        plt.axis('off')
+        
+        fig.tight_layout()
         
         return fig, ax
     
