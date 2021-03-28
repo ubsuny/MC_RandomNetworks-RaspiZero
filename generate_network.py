@@ -1,4 +1,4 @@
-import numpy as np
+from numpy import append, argwhere, array, diag, delete, ones, random, sum, triu
 from matplotlib import pyplot as plt
 
 class Erdos_Renyi_GNP:
@@ -29,29 +29,29 @@ class Erdos_Renyi_GNP:
         # allows us to force symmetry.  Although, this is one source of error
         # because it interrupts the probabilistic process.
         if A == None:
-            self.A = np.triu(np.array(np.random.rand(N, N) < p, dtype = int))
+            self.A = triu(array(random.rand(N, N) < p, dtype = int))
             if self_edges == False:
 
                 # If there are no self edges, we remove the diagonal
                 # since entry [0, 0] for example refers to Node0 <-> Node0.
-                self.A = self.A + self.A.T - 2*np.diag(np.diag(self.A))
+                self.A = self.A + self.A.T - 2*diag(diag(self.A))
 
             else:
-                self.A = self.A + self.A.T - np.diag(np.diag(self.A))
+                self.A = self.A + self.A.T - diag(diag(self.A))
         else:
             self.A = A
         
         # This sums the elements vertically then puts them in the diagonals
         # of a zero array.
-        self.D = np.diag(np.sum(self.A, axis = 1))
+        self.D = diag(sum(self.A, axis = 1))
         self.L = self.D - self.A
         
         # Since we assume this matrix is non-directional, then the lower and upper parts
         # have the same values, so we must divide by two after summing.
-        self.M = np.sum(self.A)/2
+        self.M = sum(self.A)/2
         
-        self.edges = np.argwhere(np.triu(self.A) != 0)
-        self.potential_edges = np.argwhere((np.triu(1 - self.A) - np.diag(np.ones(self.N)) != 0))
+        self.edges = argwhere(triu(self.A) != 0)
+        self.potential_edges = argwhere((triu(1 - self.A) - diag(ones(self.N)) != 0))
      
     def plot_graph(self, figsize = (4, 4)):
         
@@ -68,7 +68,7 @@ class Erdos_Renyi_GNP:
     def rewire_graph(self):
         
         # Choose at random since ER
-        idx = np.random.randint(self.edges.shape[0])
+        idx = random.randint(self.edges.shape[0])
         
         # Remove
         r_ij, r_ji = self.edges[idx]
@@ -77,18 +77,18 @@ class Erdos_Renyi_GNP:
         self.A[r_ij, r_ji] = 0
         self.A[r_ji, r_ij] = 0
         
-        self.potential_edges = np.append(self.potential_edges, self.edges[idx].reshape(1, 2), axis = 0)
-        self.edges = np.delete(self.edges, idx, axis = 0)
+        self.potential_edges = append(self.potential_edges, self.edges[idx].reshape(1, 2), axis = 0)
+        self.edges = delete(self.edges, idx, axis = 0)
         
-        potential_idx = np.random.randint(self.potential_edges.shape[0])
+        potential_idx = random.randint(self.potential_edges.shape[0])
         
         a_ij, a_ji = self.potential_edges[potential_idx]
  
         self.A[a_ij, a_ji] = A_ij
         self.A[a_ji, a_ij] = A_ji
         
-        self.edges = np.append(self.edges, self.potential_edges[potential_idx].reshape(1, 2), axis = 0)
-        self.potential_edges = np.delete(self.potential_edges, potential_idx, axis = 0)
+        self.edges = append(self.edges, self.potential_edges[potential_idx].reshape(1, 2), axis = 0)
+        self.potential_edges = delete(self.potential_edges, potential_idx, axis = 0)
         
         self.M = self.edges.shape[0]
     
