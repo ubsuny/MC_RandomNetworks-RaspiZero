@@ -28,6 +28,8 @@ class Erdos_Renyi_GNP:
 
 For our purposes, the graphs that we are using can be represented by an Erdos-Renyi graph, through some type of manipulation.  As such, this class will act as the super class to any extended classes.  So, it takes in no other classes since it is the parent.
 
+##### init
+
 Inside of this, once all of the initializations have been executed, there exists this portion
 
 ```python
@@ -57,3 +59,16 @@ self.L = self.D - self.A
 ```
 
 Here, `sum(self.A, axis = 1))` sums the value of `self.A` across the second axis (since everything starts at 0).  This could be done on the first axis as well, but for convention we use the second.  This produces a vector of size $N$, which represents the diagonal values of `self.A`.  We then use `diag` to force this vector into the diagonal of a zero matrix, like previously.  Subtracting `self.D` and `self.A` is just the Laplacian `self.L`, as defined in the Documentation.
+
+Last of the `init` function is declaring the edges and their locations:
+
+```
+self.M = sum(self.A)/2
+
+self.edges = argwhere(triu(self.A) != 0)
+self.potential_edges = argwhere((triu(1 - self.A) - diag(ones(self.N)) != 0))
+```
+
+Note that `self.M` is just its definition as defined in the Documentation.  The other variables, however, are a bit more complex.  Note that `self.edges` represents all of the places where there's an edge.  Namely, `triu(self.A) != 0` gives a Boolean array of all the locations in the upper triangular where the values are not zero.  This is because we define the lack of an edge as $0$, whereas the existence of an edge can be any value except for $0$.  So, `argwhere` gives us the location of these.
+
+As for `self.potential_edges`, this applies only for unweighted and undirected edges.  Basically, if we invert `self.A`, that is to say `1 - self.A`, this will show us all the locations where edges can be placed.  We subtract a diagonal of ones again, since `triu(1 - self.A)` will have ones in its diagonal.  Then, we apply the same rhetoric as finding `self.edges`.  As such, all of the `init` variables have been explained.
