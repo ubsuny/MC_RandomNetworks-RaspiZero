@@ -10,6 +10,10 @@ For now, this is all that I have.  In the future, I plan to do a deeper dive int
 
 In the end, I would like this to be entirely ran on the Pi Zero W.  Consider that networks take up both space and time, since they're N-dimensional structures, so minimizing the space-time complexity would be beneficial for other people, but also the current research I'm engaged in.  The work here also benefits my current research, as formalizing some functions allows for streamlined analysis.
 
+#### Other Files
+
+For now, there is only a `Code.md` and `Documentation.md`.  The former explains all of the code not inside the Jupyter Notebooks.  The latter explains the entire experiment, from the ground up.  In the future, there will be locations for figures and videos.
+
 #### Installation
 
 In order to use any of this code, all that is needed is an installation of Jupyter Notebook via the Anaconda distribution with a version of 3.5 or higher.  The primary libraries at play here are `numpy`, `matplotlib`, and `networkx`, so if these don't come with the installation of Jupyter Notebook then these should be installed at the newest version.
