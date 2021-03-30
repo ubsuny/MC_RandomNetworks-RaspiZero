@@ -62,7 +62,7 @@ Here, `sum(self.A, axis = 1))` sums the value of `self.A` across the second axis
 
 Last of the `init` function is declaring the edges and their locations:
 
-```
+```python
 self.M = sum(self.A)/2
 
 self.edges = argwhere(triu(self.A) != 0)
@@ -72,3 +72,63 @@ self.potential_edges = argwhere((triu(1 - self.A) - diag(ones(self.N)) != 0))
 Note that `self.M` is just its definition as defined in the Documentation.  The other variables, however, are a bit more complex.  Note that `self.edges` represents all of the places where there's an edge.  Namely, `triu(self.A) != 0` gives a Boolean array of all the locations in the upper triangular where the values are not zero.  This is because we define the lack of an edge as $0$, whereas the existence of an edge can be any value except for $0$.  So, `argwhere` gives us the location of these.
 
 As for `self.potential_edges`, this applies only for unweighted and undirected edges.  Basically, if we invert `self.A`, that is to say `1 - self.A`, this will show us all the locations where edges can be placed.  We subtract a diagonal of ones again, since `triu(1 - self.A)` will have ones in its diagonal.  Then, we apply the same rhetoric as finding `self.edges`.  As such, all of the `init` variables have been explained.
+
+##### plot_graph
+
+The purpose of this function is to make a spy plot of the adjacency matrix.  Since all of these are weighted the same, $1$ represents a black dot and $0$ represents a white dot, on the spy plot.  We first create a figure object
+
+```python
+fig, ax = plt.subplots(1, 1, figsize = figsize)
+```
+
+which allows us to modify the figure and axes separately.  The `1, 1` means that there is only 1 subplot.  Of course, `figsize` is just the figure size.  Then we can plot the actual spy via
+
+```python
+ax.spy(self.A)
+
+ax.set_ylabel('node ID, $y$', fontsize = 12)
+ax.set_xlabel('node ID, $x$', fontsize = 12)
+ax.xaxis.set_label_coords(0.5, 1.175)
+
+fig.tight_layout()
+```
+
+The `spy` function generates the image of the graph, the `set_ylabel` adds text to the y-axis, and `set_xlabel` to that of the x-axis.  The first parameter there is the text to be added and `fontsize` is its font size.  We have to adjust the x-axis label coordinates slightly by `ax.axis.set_label_coords` so that they appear above the x-axis numbering, as opposed to below.   This isn't specified for any graph, just for a `figsize = (4, 4)`, unfortunately.  This will be adjusted later.  
+
+Note that `fig.tight_layout()` optimizes the shape of the image, especially for subplots with more than 1.  We return `fig` and `ax` so that they can be modified if needed.
+
+##### plot_networkx
+
+Now, we can create a `networkx` plot, which is really just a fancier `matplotlib` plot.  We begin the same
+
+```python
+fig, ax = plt.subplots(1, 1, figsize = figsize)
+        
+G = nx.Graph()
+```
+
+However, `nx.Graph()` creates a graph object so that we can add our edges and nodes.  This is done by
+
+```python
+G.add_nodes_from(arange(self.N))
+G.add_edges_from(self.edges)
+```
+
+such that we can graph it by
+
+```python
+pos = nx.spring_layout(G)
+        
+nx.draw_networkx_nodes(G, pos = pos, node_color = node_color, node_size = node_size, alpha = node_alpha, ax = ax)
+nx.draw_networkx_edges(G, pos = pos, edge_color = edge_color, alpha = edge_alpha, ax = ax)
+```
+
+where `pos` is the position of the graph according to the `spring_layout` function.  This basically optimizes the placement of the nodes and edges.  We then draw the edges and nodes separately, passing in their specific parameters.  This is elaborated upon more in the docstrings.  However, we pass `ax = ax`, so it knows that the axis by which we're working under is the one we initially declared.  
+
+We finish off by setting
+
+```python
+plt.axis('off')
+```
+
+which removes the lines that form the axes.  

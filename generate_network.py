@@ -32,8 +32,8 @@ class Erdos_Renyi_GNP:
 
             else:
                 self.A = self.A + self.A.T - diag(diag(self.A))
-        else:
-            self.A = A
+                
+        else:  self.A = A
 
         self.D = diag(sum(self.A, axis = 1))
         self.L = self.D - self.A
