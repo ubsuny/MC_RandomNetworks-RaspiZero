@@ -21,3 +21,7 @@ In order to use any of this code, all that is needed is an installation of Jupyt
 #### Running the Code
 
 Although this is designed for the Raspberry Pi Zero W, this can be ran on other systems.  Once all of the necessary libraries are installed, all of the code can be run as is, in the `network_analysis.ipynb` notebook.
+
+#### Video Link
+
+https://www.youtube.com/watch?v=aFxdBRfqHU4
