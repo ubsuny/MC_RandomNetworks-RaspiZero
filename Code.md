@@ -132,3 +132,75 @@ plt.axis('off')
 ```
 
 which removes the lines that form the axes.  
+
+##### rewire_graph()
+
+Lastly, we introduce notion to rewire the graph.  Rewiring in particular is explained in the Documentation, but it's basically relocating edges of the network without creating any new ones.   We begin by picking an edge to remove at random:
+
+```python
+idx = random.randint(self.edges.shape[0])
+```
+
+The `random.randint` picks an integer at random on the domain $[0, M - 1]$ .  We can then grab the value of that edge before removing it such that
+
+```python
+r_ij, r_ji = self.edges[idx]
+A_ij, A_ji = self.A[r_ij, r_ji].copy(), self.A[r_ji, r_ij].copy()
+```
+
+where `r_ij` is the edge to remove on the upper triangular and `r_ji` for the lower triangular.  We then insert this into the array to retrieve the value.  Normally, we can just set this to be one, but we've generalized it for weighted edges.   Of course, we then set the removed edge to be zero:
+
+```python
+self.A[r_ij, r_ji] = 0
+self.A[r_ji, r_ij] = 0
+```
+
+Now, since this is an area where a potential edge exists, we must add this to that list and remove the edge from the actual edges:
+
+```python
+self.potential_edges = append(self.potential_edges, self.edges[idx].reshape(1, 2), axis = 0)
+self.edges = delete(self.edges, idx, axis = 0)
+```
+
+The `append` function creates a new array, so we just assign that to the original array we're appending on, since it takes in `self.potential_edges` as the array to be expanded on.  We just have to `reshape` that particular edge because indexing it like that messes with the array structure.
+
+Regardless, `delete` removes the value at that `idx` in `self.edges` and returns a separate array.  Similar to `append`, we just place this into the original `self.edges`.  
+
+The process to add an edge is similar, but different:
+
+```python
+potential_idx = random.randint(self.potential_edges.shape[0])
+        
+a_ij, a_ji = self.potential_edges[potential_idx]
+```
+
+We again get an index from the potential edges $P$ on the range $[0, P - 1]$ and then retrieve that location.   Instead of saving that value, since we know that it will be zero always, we just reassign it such that
+
+```python
+self.A[a_ij, a_ji] = A_ij
+self.A[a_ji, a_ij] = A_ji
+```
+
+This way, if the edge is weighted, we preserve that status.  Otherwise, the process of adding the new edge to the edges list and removing it from the potential edges is fairly similar:
+
+```python
+self.edges = append(self.edges, self.potential_edges[potential_idx].reshape(1, 2), axis = 0)
+self.potential_edges = delete(self.potential_edges, potential_idx, axis = 0)
+```
+
+Since the rewiring has finished, we have to update the edge total and the way to do this is as simple as
+
+```python
+self.M = self.edges.shape[0]
+```
+
+Note that this function returns nothing, since it really only modifies the state of the graph.  If desired, the modified indices could be removed!
+
+
+
+#### unit testing
+
+....
+
+#### TO BE CONTINUED....
+
