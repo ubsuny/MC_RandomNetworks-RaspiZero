@@ -23,38 +23,33 @@ class Erdos_Renyi_GNP:
             M -> the total number of edges by summing A and then dividing by 2, since it mirrors across the diagonal.
         
         '''
-        
-        # This basically creates the adjacency matrix by creating an N x N random array
-        # which has values from [0, 1].  So, it should be probabilistic enough to use < p
-        # to remove all values greater than that.  Taking the upper triangular (triu)
-        # allows us to force symmetry.  Although, this is one source of error
-        # because it interrupts the probabilistic process.
+
         if A == None:
             self.A = triu(array(random.rand(N, N) < p, dtype = int))
             if self_edges == False:
 
-                # If there are no self edges, we remove the diagonal
-                # since entry [0, 0] for example refers to Node0 <-> Node0.
                 self.A = self.A + self.A.T - 2*diag(diag(self.A))
 
             else:
                 self.A = self.A + self.A.T - diag(diag(self.A))
-        else:
-            self.A = A
-        
-        # This sums the elements vertically then puts them in the diagonals
-        # of a zero array.
+                
+        else:  self.A = A
+
         self.D = diag(sum(self.A, axis = 1))
         self.L = self.D - self.A
         
-        # Since we assume this matrix is non-directional, then the lower and upper parts
-        # have the same values, so we must divide by two after summing.
         self.M = sum(self.A)/2
         
         self.edges = argwhere(triu(self.A) != 0)
         self.potential_edges = argwhere((triu(1 - self.A) - diag(ones(self.N)) != 0))
      
     def plot_graph(self, figsize = (4, 4)):
+
+        '''
+
+            figsize -> the dimensions in (x, y) of the graph.
+            
+        '''
         
         fig, ax = plt.subplots(1, 1, figsize = figsize)
         
@@ -67,6 +62,17 @@ class Erdos_Renyi_GNP:
         return fig, ax
     
     def plot_networkx(self, figsize = (4, 4), node_color = 'navy', node_alpha = 0.75, node_size = 100, edge_color = 'black', edge_alpha = 0.15):
+
+        '''
+
+            figsize -> the dimensions in (x, y) of the graph.
+            node_color -> the color of the vertices of the networkx plot.
+            node_alpha -> the transparency of the vertices, on a scale of [0, 1].
+            node_size -> the size of the nodes.  This scales with figsize.
+            edge_color -> the color the connecting edges.
+            edge_alpha -> the transparency of the connecting edges, on a scale of [0, 1].
+            
+        '''
         
         fig, ax = plt.subplots(1, 1, figsize = figsize)
         
@@ -88,10 +94,8 @@ class Erdos_Renyi_GNP:
     
     def rewire_graph(self):
         
-        # Choose at random since ER
         idx = random.randint(self.edges.shape[0])
-        
-        # Remove
+
         r_ij, r_ji = self.edges[idx]
         A_ij, A_ji = self.A[r_ij, r_ji].copy(), self.A[r_ji, r_ij].copy()
         
