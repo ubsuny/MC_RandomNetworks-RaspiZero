@@ -1,4 +1,5 @@
 from numpy import append, argwhere, arange, array, diag, delete, ones, random, sum, triu
+from numpy.linalg import eigh
 from matplotlib import pyplot as plt
 import networkx as nx
 
@@ -42,6 +43,11 @@ class Erdos_Renyi_GNP:
         
         self.edges = argwhere(triu(self.A) != 0)
         self.potential_edges = argwhere((triu(1 - self.A) - diag(ones(self.N)) != 0))
+        
+        eigenvalues, eigenvectors = eigh(self.L)
+        
+        self.eigenvalues = eigenvalues
+        self.eigenvectors = eigenvectors
      
     def plot_graph(self, figsize = (4, 4)):
 
@@ -92,6 +98,16 @@ class Erdos_Renyi_GNP:
         
         return fig, ax
     
+    def update_laplacian(self):
+        
+        self.D = diag(sum(self.A, axis = 1))
+        self.L = self.D - self.A
+        
+        eigenvalues, eigenvectors = eigh(self.L)
+        
+        self.eigenvalues = eigenvalues
+        self.eigenvectors = eigenvectors
+        
     def rewire_graph(self):
         
         idx = random.randint(self.edges.shape[0])
@@ -116,4 +132,6 @@ class Erdos_Renyi_GNP:
         self.potential_edges = delete(self.potential_edges, potential_idx, axis = 0)
         
         self.M = self.edges.shape[0]
+        
+        update_laplacian()
     
