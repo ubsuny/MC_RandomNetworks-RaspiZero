@@ -25,7 +25,7 @@ class Erdos_Renyi_GNP:
         
         '''
 
-        if A == None:
+        if A is None:
             self.A = triu(array(random.rand(N, N) < p, dtype = int))
             if self_edges == False:
 
@@ -48,6 +48,9 @@ class Erdos_Renyi_GNP:
         
         self.eigenvalues = eigenvalues
         self.eigenvectors = eigenvectors
+        
+    def copy_graph(self):
+            return Erdos_Renyi_GNP(self.N, self.p, A = self.A.copy())
      
     def plot_graph(self, figsize = (4, 4)):
 
@@ -97,16 +100,6 @@ class Erdos_Renyi_GNP:
         fig.tight_layout()
         
         return fig, ax
-    
-    def update_laplacian(self):
-        
-        self.D = diag(sum(self.A, axis = 1))
-        self.L = self.D - self.A
-        
-        eigenvalues, eigenvectors = eigh(self.L)
-        
-        self.eigenvalues = eigenvalues
-        self.eigenvectors = eigenvectors
         
     def rewire_graph(self):
         
@@ -133,5 +126,16 @@ class Erdos_Renyi_GNP:
         
         self.M = self.edges.shape[0]
         
-        update_laplacian()
+        self.update_laplacian()
+        
+    def update_laplacian(self):
+        
+        self.D = diag(sum(self.A, axis = 1))
+        self.L = self.D - self.A
+        
+        eigenvalues, eigenvectors = eigh(self.L)
+        
+        self.eigenvalues = eigenvalues
+        self.eigenvectors = eigenvectors
+ 
     
