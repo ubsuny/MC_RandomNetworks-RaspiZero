@@ -24,7 +24,7 @@ class Erdos_Renyi_GNP:
         
         '''
 
-        if A == None:
+        if A is None:
             self.A = triu(array(random.rand(N, N) < p, dtype = int))
             if self_edges == False:
 
