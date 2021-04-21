@@ -1,4 +1,4 @@
-from numpy import exp, isnan, log
+from numpy import argsort, argwhere, exp, isnan, log, zeros
 from numpy.linalg import eigh
 from scipy.special import xlogy
 
@@ -34,3 +34,21 @@ def b_entropy(G, beta = 1):
     H[isnan(H)] = 0
     
     return H
+
+def edge_rankings(G, beta = 1):
+    
+    Hs = zeros((G.edges.shape[0]))
+    
+    for idx, edge in enumerate(G.edges):
+        
+        jdx = argwhere(edge == G.edges)
+        
+        A = G.edge_removal(edge, jdx)
+        
+        G.update_laplacian()
+        Hs[idx] = b_entropy(G, beta = beta).sum()
+        G.edge_addition(edge, jdx, A)
+        
+    edge_sort = argsort(argsort(-Hs))
+    
+    return Hs, edge_sort
