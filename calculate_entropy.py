@@ -49,6 +49,8 @@ def edge_rankings(G, beta = 1):
         Hs[idx] = b_entropy(G, beta = beta).sum()
         G.edge_addition(edge, jdx, A)
         
-    edge_sort = argsort(argsort(-Hs))
+    edge_sort = argsort(-Hs)
     
-    return Hs, edge_sort
+    edge_ranks = argsort(edge_sort)
+    
+    return Hs, edge_sort, edge_ranks

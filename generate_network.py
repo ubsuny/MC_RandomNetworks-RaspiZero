@@ -223,4 +223,6 @@ class SBM(Erdos_Renyi_GNP):
                 colors = append(colors, in_color)
             else: colors = append(colors, out_color)
                 
-        return colors
+        locs = colors == in_color
+                
+        return colors, locs
