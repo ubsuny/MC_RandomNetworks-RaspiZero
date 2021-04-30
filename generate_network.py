@@ -70,7 +70,7 @@ class Erdos_Renyi_GNP:
         
         return fig, ax
     
-    def plot_networkx(self, figsize = (4, 4), node_color = 'navy', node_alpha = 0.75, node_size = 100, edge_color = 'black', edge_alpha = 0.15):
+    def plot_networkx(self, figsize = (4, 4), node_color = 'navy', node_alpha = 0.75, node_size = 100, edge_color = 'black', edge_alpha = 0.15, edge_cmap = 'black'):
 
         '''
 
@@ -93,7 +93,7 @@ class Erdos_Renyi_GNP:
         pos = nx.spring_layout(G)
         
         nx.draw_networkx_nodes(G, pos = pos, node_color = node_color, node_size = node_size, alpha = node_alpha, ax = ax)
-        nx.draw_networkx_edges(G, pos = pos, edge_color = edge_color, alpha = edge_alpha, ax = ax)
+        nx.draw_networkx_edges(G, pos = pos, edge_color = edge_color, alpha = edge_alpha, ax = ax, edge_cmap = edge_cmap)
         
         plt.axis('off')
         
@@ -144,8 +144,6 @@ class Erdos_Renyi_GNP:
         potential_idx = random.randint(self.potential_edges.shape[0])
  
         self.edge_addition(self.potential_edges[potential_idx], potential_idx, (A_ij, A_ji))
-    
-        self.M = self.edges.shape[0]
         
         self.update_laplacian()
         
@@ -158,6 +156,8 @@ class Erdos_Renyi_GNP:
         
         self.eigenvalues = eigenvalues
         self.eigenvectors = eigenvectors
+        
+        self.M = self.edges.shape[0]
  
     
 
@@ -175,6 +175,7 @@ class SBM(Erdos_Renyi_GNP):
         self.p_in = p_in
         self.p_out = p_out
         self.N = N
+        self.k = k
         
         self.n = N//k
         if one_hot is None:
@@ -188,18 +189,24 @@ class SBM(Erdos_Renyi_GNP):
         self.in_mask = self.one_hot @ self.one_hot.T
         self.out_mask = 1 - self.in_mask
         
-        self.A_in = Erdos_Renyi_GNP(self.N, self.p_in).A * self.in_mask
-        self.A_out = Erdos_Renyi_GNP(self.N, self.p_out).A * self.out_mask
-        
-        self.inside_edges = argwhere(triu(self.A_in) != 0)
-        self.outside_edges = argwhere(triu(self.A_out) != 0)
-        
-        self.potential_inside_edges = argwhere((triu(1 - self.A_in) * self.in_mask - diag(ones(self.N)) != 0))
-        self.potential_outside_edges = argwhere((triu(1 - self.A_out) * self.out_mask != 0))
-        
-        self.A = self.A_in + self.A_out
+        if A is None:
+            self.A_in = Erdos_Renyi_GNP(self.N, self.p_in).A * self.in_mask
+            self.A_out = Erdos_Renyi_GNP(self.N, self.p_out).A * self.out_mask
+
+            self.inside_edges = argwhere(triu(self.A_in) != 0)
+            self.outside_edges = argwhere(triu(self.A_out) != 0)
+
+            self.potential_inside_edges = argwhere((triu(1 - self.A_in) * self.in_mask - diag(ones(self.N)) != 0))
+            self.potential_outside_edges = argwhere((triu(1 - self.A_out) * self.out_mask != 0))
+
+            self.A = self.A_in + self.A_out
+            
+        else: self.A = A
         
         Erdos_Renyi_GNP.__init__(self, N, 0, A = self.A)
+        
+    def copy_graph(self):
+            return SBM(self.N, self.p_in, self.p_out, self.k, A = self.A.copy())
     
     def get_edge_colors(self, in_color, out_color):
         
@@ -216,4 +223,6 @@ class SBM(Erdos_Renyi_GNP):
                 colors = append(colors, in_color)
             else: colors = append(colors, out_color)
                 
-        return colors
+        locs = colors == in_color
+                
+        return colors, locs
