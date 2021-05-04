@@ -66,7 +66,37 @@ This is particularly useful to us in that this is the foundation of spectral ana
 
 #### Stochastic Block Model
 
+A stochastic block model (SBM) is a structure of graphs that describe random graphs.   Here, it is structured in such a way that the diagonal blocks of the random graph are the communities, so to speak, of these graphs and the off diagonals represent the edges connecting these communities together.  (CITE)
 
+More generally, we look at the case where all of the communities are equally sized; that is to say, the size of each community $n_k$ is defined by
+
+$n_k = \frac{N}{k}${#eq:description}
+
+where $k$ is the number of communities.  It must be true then that $\sum_i^k n_k = N$.  Although this describes the network size, this does not describe the number of edges.  Typically, we describe the probability structure of the graph by the matrix
+
+$\begin{bmatrix} p_{in}^{(0)} & p_{out}^{(0, 1)} & \dots & p_{out}^{(k - 1, k)} \\ p_{out}^{(1, 0)} & p_{in}^{(1)} & \dots & \dots \\ \dots & \dots & \dots & \dots \\ p_{out}^{(k, k - 1)} & \dots & \dots & p_{in}^{(k - 1)} \end{bmatrix}${#eq:description}
+
+Note that the sum of
+
+$\sum_{i}^{k - 1} \sum_{j}^k p_{out}^{(i, j)} + \sum_i p_{in}^{(i)}$ {#eq:description}
+
+does not have to sum to unity, $1$.  Here, $p_{out}$ describes the probability of edges forming between the communities or what we'll describe as the connecting edges.  Then, $p_{in}$ describes the edges within communities, or what we'll describe as the community edges.  We can then decide the total edges within a community and connecting a community separately such that
+
+$\bar{M}_{in} = \sum_{i}^{k - 1} \dfrac{n_k (n_k + 1)}{2} \cdot p_{in}^{(k)}${#eq:description}
+
+and
+
+$\bar{M_{out}} = \dfrac{1}{2}\sum_i^{k - 1} \sum_{j}^k n_k\cdot p_{out}^{(i, j)}${#eq:description}
+
+Here, each off-diagonal block is capable of having diagonal elements and our summation assumes that the graph is unweighted and undirected, so we can just divide by two to account for duplicate blocks (i.e., $p_{out}^{(0, 1)} = p_{out}^{(1, 0)}$, or more simply a symmetric system).  Of course, then, the total number of edges would then just be
+
+$\bar{M} = \bar{M_{out}} + \bar{M_{in}}${#eq:description}
+
+with the reminder that we look at the expectation here, since forming a $G_{NP}$ is inherently random.  Overall, an SBM can be viewed as the superposition of several different random graphs of equal network size, but varying edge probabilities.  More intuitively, an SBM is analogous to, say, a typical physical partition problem.  
+
+Suppose each community represents a separate partition (CITE).  Each community edge then represents the potential that exists between two particles or nodes.  In a closed system, i.e. all $p_{out} = 0$, there is no energy exchange between the partitions, hence a lack of edges.  As such, as $p_{out}$ increases throughout overall the system, the more energy distribution that there is since the partitions are opened and now the separate communities are allowed to interact.
+
+That is all that will be said for now.  Later, this will be elaborated upon.
 
 #### Rewiring
 
