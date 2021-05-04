@@ -106,7 +106,31 @@ That is all that will be said for now.  Later, this will be elaborated upon.
 
 #### Spectral Analysis
 
+To begin, spectral analysis is the examination of eigenvalues from some arbitrary system (CITE).   Since we are dealing with graph structure, any spectral analysis deals primarily with that of the eigenvalues of the Laplacian matrix $L$ (CITE).   There are two types of the Laplacian we typically handle, the unnormalized Laplacian $L$ and the normalized Laplacian $L^{sym}$.  
 
+Here, we'll only speak of the unnormalized Laplacian.  There is nothing particularly wrong with the normalized, it's just that the unnormalized appears more commonly in nature (CITE).  Then, the eigenvalues $\{\lambda_i\}$ and eigenvectors $\{\vec{v}\}$ can be found arbitrarily with any typical algorithm.
+
+In network theory, the eigenvalues by themselves are indicative of a few things.  The first, the edge probability and number of nodes.  This is because in a typical $G_{NP}$, the average eigenvalue floats around
+
+$\bar{\lambda_i} \approx N\cdot p${#eq:description}
+
+For an SBM, this is
+
+$\bar{\lambda_i} = N \cdot p_{in}${#eq:description}
+
+assuming that each $p_{in}^{(k)}$ is of equal value.  This is because $p_{out}$, assuming that $p_{out}^{(k - 1, k)}$ is the same for all $k$, is more indicative of the community structure than the edge probabilities and nodes.  
+
+Speaking of which, we can determine, for a $G_{NP}$, how many communities there are by the number of zero eigenvalues (CITE).  Or more specifically
+
+$k = |\{\lambda_i: \lambda_i = 0 \text{ for all } i \in N - 1\}|${#eq:description}
+
+Besides that, we often study how eigenvalues change under rewiring.  If, for example, we were examining a two community SBM and randomly rewire it such that it becomes a one community SBM, we would anticipate that the number of zero eigenvalues decreases from $2$ to $1$.  (CITE)
+
+If examined on a much smaller scale, eigenvalues just in general give insight to the changing structure of the network.  It must be noted that we don't typically examine eigenvectors; this deals more with principal component analysis (PCA) (CITE) than, say, network theory's branch of spectral analysis.  
+
+Of course, these can be examined, but there is no established theory to do so in the direction that this project is headed.  And, admittedly, I don't know about them to develop theory on my own.  
+
+Otherwise, spectral analysis tends to ascend its eigenvalues by going into a more scalable form - von Neumann Entropy.
 
 #### VNE
 
