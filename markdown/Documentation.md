@@ -12,7 +12,9 @@ Really, what an edge represents here is the ability for information to spread; i
 
 Ultimately, with the above assessment, the goal of this project is to characterize these networks on a purely random level.  That is to say, for a network of size $N$ it is generated randomly with edge probability $p$, the probability of an edge between two nodes, so that both the configuration and the number of edges $M$ is random each time, within the probability constraints [@dane].   With that, we can create an analogy between this and that of actual particle interaction via information-theoretic entropic analysis, among other things.  In order to make definitive statements about these random networks, the goal of this assignment, I will employ the use of Monte Carlo methods so that we can validate known theory and also make observations of our own.   As a further constraint, this will also be created such that it can be reasonably ran on a Pi Zero W, which introduces its own margin of error.
 
+### Limitations of the Raspberry Pi Zero W
 
+put stuff here lol
 
 ### Network Theory
 
@@ -100,7 +102,7 @@ That is all that will be said for now.  Later, this will be elaborated upon.
 
 #### Rewiring
 
-
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 
 ### Von Neumann Entropy
 
@@ -166,9 +168,47 @@ $\forall_{i, j \in N - 1} \lambda_i = \lambda_j$ {#eq:description}
 
 So, with any typical entropy model, when all of the probabilities are the same the entropy is maximized.  It is reasonable then to conclude that the usefulness of this model isn't particularly high; it really just indicates the density of any Laplacian, which can be observed regardless if this Laplacian is known.  As such, it is only useful when the Laplacian is not known, in the rare case where only the eigenvalues are known.  
 
-Because of this, data scientists sought to find a better entropy model; one that has more application to physical systems.  
+Because of this, data scientists sought to find a better entropy model; one that has more application to physical systems.  Recently, the following function was validated as being correct [@manlio]:
+
+$H_\beta = -\sum_i \dfrac{e^{-\beta \lambda_i}}{Z} \log_2 \dfrac{e^{-\beta \lambda_i}}{Z}$ {#eq:description}
+
+Here, $Z$ is the partition function (CITE) from statistical mechanics such that
+
+$Z = \sum_je^{-\beta \lambda_j}${#eq:description}
+
+where $\beta$ is some time-scale parameter.  Because of this parameter, we denote $H_\beta$ as such.  Note that in statistical mechanics $\beta$ is defined as 
+
+$\beta = \dfrac{1}{k_BT}${#eq:description}
+
+where $k_B$ is the Boltzmann constant and $T$ is the system temperature.  However, here it refers to the time domain as opposed to the energy domain, especially since we're dealing with information theory here.   Via quantum mechanics, this makes sense since energy and time cannot be known simultaneously (CITE), so in a way this is the complement to the energy-based parameter.
+
+Regardless, it is apparently that $\sum_i \dfrac{e^{-\beta \lambda_i}}{Z} = 1$, since $Z$ is but the total of all of the denominator.  This model of entropy in particular is great for community detection [@manlio].  That is to say, for a dense enough network with community structure, an SBM for example, the entropy approximates to the following form (CITE):
+
+$H_\beta \approx \log_2 k$
+
+For example, a dense $G_{NP}$ with no community structure will evaluate to zero entropy.  However, totally independent nodes, that is to say $k = N$, will evaluate to maximal entropy, or the maximum number of communities.  As such, it is apparent how this could be useful in community detection.  This is where the model breaks away from the older model; it can detect community effortlessly giving it purpose above determining matrix density.
+
+Really, the question here remains about how $\beta$ effects this entropy.  Consider $\beta$ as such:  this parameter is indicative of how long the nodes get to interact through edges.  So, small $\beta$ means that there is less time for the nodes to interact and large $\beta$ means that there is plenty of time to interact.
+
+Later, this will be useful in edge ranking, more specifically in determining the most important edges.   Nevertheless, this is the extent of the entropy model; it is rather new, so the technicalities of it have yet to be worked out.  Especially since this partition of network science isn't the most popular.
 
 #### Edge Ranking
+
+START THIS
+
+For now, we can make one more statement on $\beta$:  when $\beta$ is infinitely small, our $H_\beta \approx H_M$.  We can use a Taylor expansion to show this:
+
+$\beta \approx 0: Z = \sum_j e^{-\beta \lambda_j} \approx \sum_j -\beta \lambda_j = -\beta \sum_j \lambda_j = -\beta (2M)$ {#eq:description}
+
+Note that the statement $\sum_j \lambda_j = 2M$ actually comes from our original model (CITE).  Further,
+
+$\beta \approx 0: e^{-\beta \lambda_i} \approx -\beta \lambda_i$ {#eq:description}
+
+Then,
+
+$\beta \approx 0: H_\beta \approx -\sum_i\dfrac{-\beta\lambda_i}{Z}\log_2\dfrac{-\beta\lambda_i}{Z} \approx -\sum_i\dfrac{-\beta\lambda_i}{-\beta(2M)}\log_2\dfrac{-\beta\lambda_i}{-\beta(2M)} =-\sum_i \dfrac{\lambda_i}{2M}\log_2\dfrac{\lambda_i}{2M}${#eq:description}
+
+Ultimately, this explains why small $\beta$ is unable to distinguish important edges; it no longer acts an entropic model for community detection, but rather the density of the network.  More technically, the eigenvalues that would normally have the most important value to the entropy model are now zeroed out, meaning that they all weigh the same.  The rich structure that we can observe from spectral analysis vanishes, basically.
 
 ### Using Monte Carlo as an Explorative Tool
 
