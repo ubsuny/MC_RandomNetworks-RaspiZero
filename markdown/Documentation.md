@@ -132,11 +132,41 @@ Of course, these can be examined, but there is no established theory to do so in
 
 Otherwise, spectral analysis tends to ascend its eigenvalues by going into a more scalable form - von Neumann Entropy.
 
-#### VNE
+#### Von Neumann Entropy
 
-Namely, von Neumann Entropy (VNE) ... *THIS IS FOR THE NEXT PART! Manlio...*[@manlio]
+Von Neumann Entropy (VNE) is but one way to interpret eigenvalues (CITE).  It originally comes from the equation of Shannon entropy (CITE) such that
 
+$H = -\sum_i p_i \log p_i${#eq:description}
 
+where $H$ is our entropy and $p_i$ is the probability of some event happening.  From a quantum perspective, think of an example such that we measure the probability of the location of a particle.  If we know that it exists, then it must exist in one such location so that 
+
+$\sum_i p_i = 1$ {#eq:description} 
+
+However, VNE takes this one step further by defining the probabilities as the trace of some density matrix, Tr($\rho$) (CITE), such that $\rho$ is the density matrix.  The entropy is then
+
+$H = - \text{Tr}(\rho)\log_2 \text{Tr}(\rho)${#eq:description}
+
+where base 2 comes from the binary representation of information (CITE).  Recent publications have claimed that Tr$(\rho)$ is really a function of the eigenvalues (CITE) such that 
+
+$\text{Tr}(\rho)_i = \dfrac{\lambda_i}{2M}${#eq:description}
+
+which would create an entropic model such that
+
+$H_M = -\sum_i \dfrac{\lambda_i}{2M}\log_2\dfrac{\lambda_i}{2M}${#eq:description}
+
+We denote $H_M$ as such, since it is an entropic model that depends on the number of edges.  Note that it is true (CITE)
+
+$\sum_i \dfrac{\lambda_i}{2M} = 1${#eq:description}
+
+Since this comes from the trace of the density matrix, it is rather evident that this entropy serves its purposes as a means to convey the density of the Laplacian.  Ultimately, this is indicative of the edge probability.  
+
+As such, in a totally disconnected system such that $M = 0$, the entropy is minimized at $H_M = 0$ because all eigenvalues would be zero such that we define $0\log_2 0 = 0$.  However, when $p = 1$, that is to say the maximum $M$, all of the eigenvalues take on the same value such that
+
+$\forall_{i, j \in N - 1} \lambda_i = \lambda_j$ {#eq:description}
+
+So, with any typical entropy model, when all of the probabilities are the same the entropy is maximized.  It is reasonable then to conclude that the usefulness of this model isn't particularly high; it really just indicates the density of any Laplacian, which can be observed regardless if this Laplacian is known.  As such, it is only useful when the Laplacian is not known, in the rare case where only the eigenvalues are known.  
+
+Because of this, data scientists sought to find a better entropy model; one that has more application to physical systems.  
 
 #### Edge Ranking
 
