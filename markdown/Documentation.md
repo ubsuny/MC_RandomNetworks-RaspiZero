@@ -14,7 +14,15 @@ Ultimately, with the above assessment, the goal of this project is to characteri
 
 ### Limitations of the Raspberry Pi Zero W
 
-put stuff here lol
+The deployment of this application on the Raspberry Pi Zero W is not a particularly difficult feat; none of the involved libraries here are difficult to install or unable to be installed on the Raspberry Pi Zero W.  Nor are the calculations time intensive; most of these calculations are upper bounded by $\mathcal{O}(N^4)$ such that $N$ is the network size.
+
+Really, the limiting factor here is space.  Since graph structures are represented in $y$ dimensional arrays such that $y \geq 2$, their space usage does not scale particularly well.  Notably, since most graphs are represented symmetrically, at least the ones we'll be dealing with, there will always be a spatial demand of at least $N \times N$.   If this is a multilayer structure [@multilayer], then this is brought into the third dimension by some number of layers $l$.  Further, since each float is at minimum 4 bytes and maximum 16 bytes, the space allocation $S$ scales $4 \cdot (N \times N \times l) \leq S \leq 16 \cdot (N \times N \times l)$.
+
+As such, much of this experimentations for the Raspberry Pi Zero must be done with smaller networks, say 100 nodes.  Although this seems like a lot, physical systems are in the thousands to millions of nodes so we will have difficulty presenting any tangible system in our experimental environment.  
+
+There are, however, experimental libraries in Python designed for the Raspberry Pi Zero W, such as VideoCore, to optimize libraries such as NumPy.  The issue is that it's rather experimental so any incorrect configuration could evaporate the board.  Not literally, but it would at worst brick the system.  Especially in such a complicated set of calculations, it's not worth the risk of trying to set it up.  With that, the solution we'll be utilizing is instead to just limit space usage.  And by virtue of working on smaller networks, the computation time will also speed up since it depends on network size.
+
+With that, discussion on theory can begin.
 
 ### Network Theory
 
