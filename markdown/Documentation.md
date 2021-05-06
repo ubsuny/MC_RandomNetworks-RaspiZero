@@ -202,13 +202,33 @@ Later, this will be useful in edge ranking, more specifically in determining the
 
 #### Edge Ranking
 
-START THIS
+The way that we rank edges is a rather simple process.  To begin, removing one edge will produce some entropy $\Delta H_\beta$, which we can measure after modifying the Laplacian.  What is measured here is really just the difference in the entropy of the original graph, $H_{\beta}^{(1)}$, and the entropy after one edge has been removed, $H_{\beta}^{(1)}$.  More generally, we can denote the entropy for $t$ removals as
 
-For now, we can make one more statement on $\beta$:  when $\beta$ is infinitely small, our $H_\beta \approx H_M$.  We can use a Taylor expansion to show this:
+$H_{\beta}^{(t)}${#eq:description}
+
+such that it reflects the change in the Laplacian.  However, for this we only deal with one removal.  This is because after we remove the edge and calculate its entropy, we return the graph to its initial state.  The goal is to calculate the entropy of each individual edge removal, as opposed to procedurally bringing the graph down to zero edges (CITE).  
+
+Therefore, the process is as follows:
+
+* We collect the set of all edges.
+* Then, we iterate over this set of all edges.
+* After, remove the edges in any order and calculate the entropy following a single removal.
+* Following this, we restore the edge that was removed and move onto the next edge.
+* We do this for all edges.
+
+The main consideration is that we only have to do this for the upper triangular or lower triangular of the graph because, due to symmetry, the edge $(1, 2)$ for example will have the same entropy as $(2, 1)$.  This is a nice feature of undirected graphs.  Once we have collected the set of entropies for all individual edge removals, we can then sort them from greatest to least such that the edge with the lowest ranking (meaning most important) would have the highest entropy.
+
+The logic for this is that an edge removal will cause a change in the eigenvalues.  If this removal entropy is low, then it has not perturbed the structure of the eigenvalues.  However, the higher that this entropy is (a reminder that this is relative to the base entropy) the more that the eigenvalue structure has been perturbed.  As such, we treat the edges that generate the most entropy as the most important edge as it implies some deep structural connection to the system (CITE).
+
+The application of edge ranking to a single-community $G_{NP}$ is not particularly interesting; there is not really a community structure to be squeezing insight out of.  Rather, looking for something is really just the Jesus in the toast phenomena (CITE).  However, for $k \geq 2$, there certainly exists a distinction between community and connecting edges.  Because of that, edge ranking in an ideal scenario would be able to distinguish between community and connecting edges without any prior impetus.  In saying this, we mean that without any bias the entropy model should be able to identify the two different edge types.  There is no citation here, as it is currently ongoing research, unpublished.
+
+Hence, the beauty of the $H_\beta$ model is as such.  In entangled systems, it can tell us the most important edges and we can work backwards to understand the community structure of rather implicit networks.  The brain, as one example, where the community boundaries are not clearly defined  (CITE).  Or, in somewhat recent years, a Congressional network (CITE), where we can confirm party lines as the two communities (CITE).  In either instance, this entropy model is intensely powerful for a well-defined network.
+
+The one caveat to this model is that it depends intrinsically on the time-scale parameter $\beta$.  This parameter determines the hierarchy of the edges, seemingly independent of the actual eigenvalues.  For example, when $\beta$ is infinitely small, our $H_\beta \approx H_M$.  We can use a Taylor expansion to show this:
 
 $\beta \approx 0: Z = \sum_j e^{-\beta \lambda_j} \approx \sum_j -\beta \lambda_j = -\beta \sum_j \lambda_j = -\beta (2M)$ {#eq:description}
 
-Note that the statement $\sum_j \lambda_j = 2M$ actually comes from our original model (CITE).  Further,
+Note that the statement $\sum_j \lambda_j = 2M$ actually comes from our original model [@dane].  Further,
 
 $\beta \approx 0: e^{-\beta \lambda_i} \approx -\beta \lambda_i$ {#eq:description}
 
@@ -217,6 +237,30 @@ Then,
 $\beta \approx 0: H_\beta \approx -\sum_i\dfrac{-\beta\lambda_i}{Z}\log_2\dfrac{-\beta\lambda_i}{Z} \approx -\sum_i\dfrac{-\beta\lambda_i}{-\beta(2M)}\log_2\dfrac{-\beta\lambda_i}{-\beta(2M)} =-\sum_i \dfrac{\lambda_i}{2M}\log_2\dfrac{\lambda_i}{2M}${#eq:description}
 
 Ultimately, this explains why small $\beta$ is unable to distinguish important edges; it no longer acts an entropic model for community detection, but rather the density of the network.  More technically, the eigenvalues that would normally have the most important value to the entropy model are now zeroed out, meaning that they all weigh the same.  The rich structure that we can observe from spectral analysis vanishes, basically.
+
+There are still two cases, yet.  Specifically, $\beta = 1$ and $\beta >>> 1$.  In the first case, there is really nothing to say.  It is almost like the time-scale parameter isn't there, so it doesn't influence the eigenvalues by any means.  In the second case, however, we treat this as $\beta$ being very large, or really 
+
+$\lim_{\beta \to \infty} H_\beta${#eq:description}
+
+As such, we first look at $e^{-\beta \lambda_i}$.  There are two cases to consider here:
+
+$e^{-\beta \lambda_i} \approx \begin{cases} 1: & \lambda_i \approx 0 \\ 0: & \lambda_i \not\approx 0\end{cases}$ {#eq:description}
+
+For a $k$-community SBM, the first condition occurs for the first $k$ eigenvalues.   The second condition occurs for the $N - k$ eigenvalues that form a Gaussian distribution about $N \cdot p_{in}$.  As such, $Z$ can be written as such
+
+$Z \approx \sum_j^{k} e^{-\beta\lambda_j}${#eq:description}
+
+However, we know that here $e^{-\beta\lambda_i} \approx 0$ such that
+
+$Z = k${#eq:description}
+
+This is fine because most eigenvalue algorithms have them sorted from least to greatest.  If not, we would have to impose more conditions.   Regardless, this would mean that our entropy takes on the approximate form
+
+$H_\beta \approx -\sum_i^k \dfrac{1}{k} \log_2 \dfrac{1}{k} = \log_2 k${#eq:description}
+
+which is where an earlier formulation comes from.  As such, this detects community structure strongly; it almost discards the latent organization of the network to exclusive phone in on the community-determining eigenvalues.  Because of that, when an edge is removed, the entropy produced here reflects the community structure.  With that, the connecting edges are always going to have highest priority because they determine the number of near-zero eigenvalues [@manlio].  
+
+Of course, computers can only handle so large a $\beta$, so this is purely a theoretical application.  Since $\beta$ is being exponentiated, it quickly approaches the limits of machine precisions and oftentimes reaches float overflow if $\beta$ is not properly calibrated.  
 
 ### Using Monte Carlo as an Explorative Tool
 
