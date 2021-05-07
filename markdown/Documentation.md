@@ -264,9 +264,23 @@ Of course, computers can only handle so large a $\beta$, so this is purely a the
 
 ### Using Monte Carlo as an Explorative Tool
 
-...
+Since a $G_{NP}$ and, by extension, an SBM are inherently random in nature, there exists permutations for any given configuration.  That is to say for an initial $N$ and $p$, a graph can be rearranged in finite ways while still preserving the qualities.  As such, there emerges an application of Monte Carlo analysis to first validate known quantities and then, after knowing that the Monte Carlo simulations are valid, using it to validate behavior expectations.  
 
+Taking a step back, Monte Carlo simulations, named after the location in Monaco, is a set of methods to try and quantify random processes (CITE).  Or, more simply, we group together random behavior such that we can potentially classify it by its average.  This is particularly useful in cases where the phenomena doesn't necessarily have a closed form solutions.  One such practical application of this is integrals; not all integrals can be described easily in algebraic terms.  So, a Monte Carlo simulation can be used to find an approximate solution to this calculus (CITE).
 
+The real catch here, however, is that Monte Carlo simulations become increasingly better at describing the phenomena as the sample size increases.  That it so say, the data being averaged over will be nearly accurate if there are infinitely many iterations.  As the number of iterations increases, the accuracy asymptotically approaches zero (CITE).  Unfortunately, due to computer limitations such as machine precision, eventually the most accurate of systems will fall apart from the computer not being able to carry about basic arithmetic properly.  So, there exists a iteration-accuracy tradeoff such that there needs to be decided a number of iterations where the accuracy doesn't fall under machine precision.  This, however, is not the goal of this project.
+
+Rather, our use of Monte Carlo simulations here, as aforementioned, are to first validate known quantities.  For example, we can use Monte Carlo simulations to validate that
+
+$\bar{\lambda_i} \approx N \cdot p${#eq:description}
+
+or 
+
+$\bar{M} \approx \dfrac{N(N - 1)}{2} \cdot p${#eq:description}
+
+Since these are known, we can use them to validate that Monte Carlo simulations will in fact operate well on graph structures.  Once that has been done, we can move onto something more ambitious, say understanding how SBM structure affects edge rankings for different $\beta$, $p_{in}$, or $p_{out}$.  Our focus will mostly be on $p_{in}$ and $p_{out}$, since we've already described out how the behavior of $\beta$ should operate.   
+
+Regardless, once this established we can set up a framework for a toy model experiment. 
 
 ### Potential Applications to Real Physics
 
@@ -286,6 +300,12 @@ Nevertheless, it is the amount of information that can be gleaned from network t
 
 ### Conclusion
 
-....
+DISCUSS RESULTS
+
+So, now that all of the outstanding issues have been addressed, where would I see this project going? Foremost, it would be good to develop models for different types of random networks, such as a multilayer network [@multilayer] or scale-free network (CITE).   Both certainly appear in nature; arguably more so than an SBM, since a typical SBM has rather fixed constraints in terms of community size.
+
+After that? I would like to apply this to real physical data.  One such example of something with rich community structure can be found in biology or chemistry.  What I refer to here is really any large molecule (CITE).  With initial conditions, the actual bond energies can be calculated such that we can form something with visible community structure.   The main reason that I wasn't able to apply this here is that, since this is designed for the Raspberry Pi Zero W, the space limitations are fairly obvious.  You can look at the protein database (CITE) and see that much of these molecules are in the thousands, if not tens of thousands, of atoms or what we would classify as the nodes.
+
+Otherwise, I think that this was a clear success.  There exists now a rather evident bridge between the information-theoretic world and some of the most classical of physics problems, namely the partition problem that pops up in statistical mechanics and thermodynamics.  Interestingly enough, those problems also deal in entropy, but a kind different from the one described here.  Regardless, this was enjoyable and I look forward to studying this more as I ascend the academic ranks.
 
 ### References
