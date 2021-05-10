@@ -36,6 +36,11 @@ def b_entropy(G, beta = 1):
     return H
 
 def edge_rankings(G, beta = 1):
+
+    '''
+        G -> the graph object
+        beta -> the time-scale parameter
+    '''
     
     Hs = zeros((G.edges.shape[0]))
     
@@ -57,6 +62,12 @@ def edge_rankings(G, beta = 1):
 
 
 def top_ranked(sorts, locs, cutoff = 0.10):
+
+    '''
+        sorts -> the way that the edges are sorted by entropy value
+        locs -> the locations of the edges.  1 is community, 0 if connecting
+        cutoff -> the percentile to cutoff the edge rankings
+    '''
     
     cutoff_idx = int(cutoff*sorts.shape[0])
     if cutoff_idx == sorts.shape[0]:
