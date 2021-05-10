@@ -11,7 +11,7 @@ The purpose of this document is to explain all of the code found throughout the 
 The only item here, the class, is here to store all of the network properties and to include its basic methods, mostly that of rewiring.   Of course, the imports come first:
 
 ```python
-from numpy import append, argwhere, arange, array, diag, delete, ones, random, sum, triu
+from numpy import append, argwhere, arange, array, diag, delete, eigh, ones, random, sum, triu
 from matplotlib import pyplot as plt
 import networkx as nx
 ```
@@ -30,10 +30,12 @@ For our purposes, the graphs that we are using can be represented by an Erdos-Re
 
 ##### init
 
+###### Erdos-Renyi
+
 Inside of this, once all of the initializations have been executed, there exists this portion
 
 ```python
-if A == None:
+if A is None:
             self.A = triu(array(random.rand(N, N) < p, dtype = int))
             if self_edges == False:
 
@@ -67,11 +69,84 @@ self.M = sum(self.A)/2
 
 self.edges = argwhere(triu(self.A) != 0)
 self.potential_edges = argwhere((triu(1 - self.A) - diag(ones(self.N)) != 0))
+
+eigenvalues, eigenvectors = eigh(self.L)
+        
+self.eigenvalues = eigenvalues
+self.eigenvectors = eigenvectors
 ```
 
 Note that `self.M` is just its definition as defined in the Documentation.  The other variables, however, are a bit more complex.  Note that `self.edges` represents all of the places where there's an edge.  Namely, `triu(self.A) != 0` gives a Boolean array of all the locations in the upper triangular where the values are not zero.  This is because we define the lack of an edge as $0$, whereas the existence of an edge can be any value except for $0$.  So, `argwhere` gives us the location of these.
 
-As for `self.potential_edges`, this applies only for unweighted and undirected edges.  Basically, if we invert `self.A`, that is to say `1 - self.A`, this will show us all the locations where edges can be placed.  We subtract a diagonal of ones again, since `triu(1 - self.A)` will have ones in its diagonal.  Then, we apply the same rhetoric as finding `self.edges`.  As such, all of the `init` variables have been explained.
+As for `self.potential_edges`, this applies only for unweighted and undirected edges.  Basically, if we invert `self.A`, that is to say `1 - self.A`, this will show us all the locations where edges can be placed.  We subtract a diagonal of ones again, since `triu(1 - self.A)` will have ones in its diagonal.  Then, we apply the same rhetoric as finding `self.edges`.  
+
+We also define the eigenvalues and eigenvectors so that we can use it for spectral analysis.
+
+As such, all of the `init` variables have been explained for a random graph.  We can repeat the process for an SBM:
+
+###### SBM
+
+```python
+class SBM(Erdos_Renyi_GNP):
+```
+
+Basically, the SBM class extends the original class; it acts as the parent to the SBM class.  We can set a few new properties:
+
+```python
+self.p_in = p_in
+self.p_out = p_out
+self.N = N
+self.k = k
+
+self.n = N//k
+```
+
+where `self.k` is the number of communities, `self.n` is the nodes per community, and `self.p_in` and `self.p_out` are the inside and outside probabilities, respectively.  Since this is a community-based structure, we have to define a one hot such that
+
+```python
+if one_hot is None:
+    self.one_hot = zeros((self.N, k))
+
+    for dim in range(k):
+    	self.one_hot[(self.n*dim):(self.n*(dim + 1)), dim] = 1
+
+else: self.one_hot = one_hot
+```
+
+Basically, the one hot is a $1$ is the node belongs to the community and a $0$ if it doesn't.  This just creates an $N \times k$ array of ones and zeros that we can use to identify community members.  In a random graph, it would all be ones.  We define the mask for the inside community and outside communities such that
+
+```python
+self.in_mask = self.one_hot @ self.one_hot.T
+self.out_mask = 1 - self.in_mask
+```
+
+Basically, it's an $N \times N$ array where the edges are $1$ if it's inside the community and $0$ if outside the community.  This is for the `self.in_mask`.  The `self.out_mask` is really just the additive inverse of this.  Now, to actually generate `A`:
+
+```python
+if A is None:
+    self.A_in = Erdos_Renyi_GNP(self.N, self.p_in).A * self.in_mask
+    self.A_out = Erdos_Renyi_GNP(self.N, self.p_out).A * self.out_mask
+
+    self.inside_edges = argwhere(triu(self.A_in) != 0)
+    self.outside_edges = argwhere(triu(self.A_out) != 0)
+
+    self.potential_inside_edges = argwhere((triu(1 - self.A_in) * self.in_mask - diag(ones(self.N)) != 0))
+    self.potential_outside_edges = argwhere((triu(1 - self.A_out) * self.out_mask != 0))
+
+    self.A = self.A_in + self.A_out
+            
+else: self.A = A
+```
+
+Here, we effectively create two separate adjacency matrices `self.A_in` and `self.A_out`.  The first is the in-communities and the second is the out-connections.  We multiply them by their masks so that we can linearly add them and the edges don't overlap.  Then, we derive the potential edges as normally, but include the different edge types for rewiring purposes.  Mostly, if someone wishes to add community-directed rewiring.
+
+Once this is done, we declare the rest of the structure-independent properties by calling the init of the Erdos-Renyi class:
+
+```python
+Erdos_Renyi_GNP.__init__(self, N, 0, A = self.A)
+```
+
+We set `N` and `0` because we don't actually care what these properties produce.
 
 ##### plot_graph
 
@@ -133,15 +208,25 @@ plt.axis('off')
 
 which removes the lines that form the axes.  
 
-##### rewire_graph()
+##### copy_graph()
 
-Lastly, we introduce notion to rewire the graph.  Rewiring in particular is explained in the Documentation, but it's basically relocating edges of the network without creating any new ones.   We begin by picking an edge to remove at random:
+For the two different graphs we've defined, there are two definitions for `copy_graph()`.  The first:
 
 ```python
-idx = random.randint(self.edges.shape[0])
+Erdos_Renyi_GNP(self.N, self.p, A = self.A.copy())
 ```
 
-The `random.randint` picks an integer at random on the domain $[0, M - 1]$ .  We can then grab the value of that edge before removing it such that
+which just returns a new instance of the current graph.  For the SBM:
+
+```python
+SBM(self.N, self.p_in, self.p_out, self.k, A = self.A.copy())
+```
+
+Nothing special.  This just helps us in spectral analysis for comparing the base state to the original state.
+
+##### edge_removal()
+
+Now, we introduce notion to remove edges from the graph.  Removal in particular is explained in the Documentation, but it's basically removing edges of the network without creating any new ones.   We begin by taking in an index to remove from:
 
 ```python
 r_ij, r_ji = self.edges[idx]
@@ -164,7 +249,9 @@ self.edges = delete(self.edges, idx, axis = 0)
 
 The `append` function creates a new array, so we just assign that to the original array we're appending on, since it takes in `self.potential_edges` as the array to be expanded on.  We just have to `reshape` that particular edge because indexing it like that messes with the array structure.
 
-Regardless, `delete` removes the value at that `idx` in `self.edges` and returns a separate array.  Similar to `append`, we just place this into the original `self.edges`.  
+Regardless, `delete` removes the value at that `idx` in `self.edges` and returns a separate array.  Similar to `append`, we just place this into the original `self.edges`.   We return `A_ij` and `A_ji` in case the graph is weighted.
+
+##### edge_addition()
 
 The process to add an edge is similar, but different:
 
@@ -188,15 +275,69 @@ self.edges = append(self.edges, self.potential_edges[potential_idx].reshape(1, 2
 self.potential_edges = delete(self.potential_edges, potential_idx, axis = 0)
 ```
 
-Since the rewiring has finished, we have to update the edge total and the way to do this is as simple as
+##### rewire_graph()
+
+To rewire the graph, we combine addition and removal such that we begin by picking an edge to remove at random:
 
 ```python
-self.M = self.edges.shape[0]
+idx = random.randint(self.edges.shape[0])
+```
+
+The `random.randint` picks an integer at random on the domain $[0, M - 1]$ .  We can then grab the value of that edge before removing it such that
+
+```python
+A_ij, A_ji = self.edge_removal(self.edges[idx], idx)
+        
+potential_idx = random.randint(self.potential_edges.shape[0])
+
+self.edge_addition(self.potential_edges[potential_idx], potential_idx, (A_ij, A_ji))
+```
+
+This also executes the addition.
+
+Since the rewiring has finished, we have to update the Laplacian
+
+```python
+self.update_laplacian()
 ```
 
 Note that this function returns nothing, since it really only modifies the state of the graph.  If desired, the modified indices could be removed!
 
+##### update_laplacian()
 
+Updating the Laplacian properties is rather simple.  We're really just updating the eigenvalues and eigenvectors, as well as the edges while we're there:
+
+```python
+self.D = diag(sum(self.A, axis = 1))
+self.L = self.D - self.A
+
+eigenvalues, eigenvectors = eigh(self.L)
+
+self.eigenvalues = eigenvalues
+self.eigenvectors = eigenvectors
+
+self.M = self.edges.shape[0]
+```
+
+Nothing special here; this is really similar to the init.
+
+##### get_edge_colors()
+
+One special feature of the SBM is that we can distinguish between community and connecting edges.  That's what this function does.  We:
+
+```python
+colors = array([])
+        
+for edge in self.edges:
+    i, j = edge
+    if self.in_mask[i, j] == 1:
+        colors = append(colors, in_color)
+    else: colors = append(colors, out_color)
+
+locs = colors == in_color
+```
+
+This generates a color array such that we can distinguish the edges.  It also returns the location of these edges in a Boolean array so that we can use this with edge ranking.  Effectively, if the `self.in_mask` is $1$ at a location, then it must be a community edge.  Otherwise, it's a connecting edge.
 
 #### unit testing
 
