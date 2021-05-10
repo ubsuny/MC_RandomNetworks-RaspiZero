@@ -6,6 +6,8 @@ The purpose of this document is to explain all of the code found throughout the 
 
 
 
+### Code
+
 #### generate_network.py
 
 The only item here, the class, is here to store all of the network properties and to include its basic methods, mostly that of rewiring.   Of course, the imports come first:
@@ -339,6 +341,8 @@ locs = colors == in_color
 
 This generates a color array such that we can distinguish the edges.  It also returns the location of these edges in a Boolean array so that we can use this with edge ranking.  Effectively, if the `self.in_mask` is $1$ at a location, then it must be a community edge.  Otherwise, it's a connecting edge.
 
+
+
 #### generate_network.py unit testing
 
 To start, the imports:
@@ -407,6 +411,8 @@ for _ in range(100):
 Basically, every iteration we make sure that they're the same.  This means that the addition and removal have succeeded in some way *and* no self edges were added in the process.
 
 Note that none of these tests reflect the SBM - this is OK, they would be the exact same, anyway.  The real test of the SBM comes from testing entropy, since that's more of what it indicates.
+
+
 
 #### calculate_entropy.py
 
@@ -498,7 +504,98 @@ Since `locs` is a Boolean array, taking the negated sum of it will produce the n
 
 #### calculate_entropy.py unit testing
 
+The unit testing for `calculate_entropy.py` is a bit more complicated than the other tests.   Namely, since entropy is a bit more random in nature, not all things are certain.   We can begin with import statements:
+
+```python
+import sys
+sys.path.insert(1, '../')
+
+from generate_network import *
+from calculate_entropy import *
+from numpy import log2
+```
+
+Nothing new here; we have to use `numpy` for something later.  Otherwise, both utility functions are needed, which is to be expected.  We can start with something basic:
+
+##### test_minimum_entropy()
+
+All entropy must be greater than zero.  We can test this:
+
+```python
+N = 100
+p = 0.25
+
+G = Erdos_Renyi_GNP(N, p)
+
+assert(m_entropy(G).sum() >= 0)
+```
+
+This is true for both entropy models.  Although individual parts can be less than zero, the aggregate cannot.  We can also test maximum entropy:
+
+##### test_maximum_entropy()
+
+```
+assert(m_entropy(G).sum() <= log2(N))
+```
+
+Note that this comes from the idea that the most dense a matrix can be is at $N \cdot p$ for $p = 1$.  This is the ceiling of our entropy.  We can also express that entropy scales upward with $N$:
+
+##### test_scaling_entropy()
+
+```python
+Ns = range(10, 100, 5)
+for idx, N in enumerate(Ns[1:]):
+    G0 = Erdos_Renyi_GNP(Ns[idx], p)
+    G1 = Erdos_Renyi_GNP(N, p)
+    assert(m_entropy(G1).sum() >= m_entropy(G0).sum())
+```
+
+This is actually expressed in our other notebooks.  However, the idea is that if $p$ is fixed, then adding new nodes increases the density of the network, since now there are more edges.  Since our entropy model measures density, the entropy will increase with $N$.   Now, we can move onto the other entropy model!
+
+##### test_community_entropy()
+
+We start by showing that the entropy increases with the number of communities, as defined in Documentation.md:
+
+```python
+N = 100
+ks = range(1, 10, 2)
+p_in = 1
+p_out = 0
+
+for idx, k in enumerate(ks[1:]):
+    G0 = SBM(N, p_in, p_out, k = ks[idx])
+    G1 = SBM(N, p_in, p_out, k = k)
+
+    assert(b_entropy(G0).sum() <= b_entropy(G1).sum())
+```
+
+Basically, as $k$ increases, so does entropy.  We fix `p_in` and `p_out` so that the entropy is as rigid as possible.  But basically, the entropy logarithmically increases, since `ks[idx]` < `k`.  
+
+Lastly, we can check that the entropy increases with random rewiring from a strongly structured system:
+
+#### test_rewiring_entropy()
+
+```python
+N = 100
+k = 2
+p_in = 1
+p_out = 0
+
+G = SBM(N, p_in, p_out, k = k)
+H0 = b_entropy(G).sum()
+for t in range(1000):
+    G.rewire_graph()
+    if t % 25 == 0 and t != 0:
+        H1 = b_entropy(G).sum()
+        assert(H1 < H0)
+        H0 = H1
+```
+
+The main thing here is that we check every $25$ iterations because rewiring here is a random process.  So, potentially, the next rewire after this could produce something counterintuitive to the if statement.  As such, we check after a large enough interval to guarantee it.  We also have to make sure to not rewire too much so that it doesn't converge to a purely random graph.
 
 
-#### TO BE CONTINUED....
+
+### Conclusion
+
+The unit tests here are kind of sparse.  Since this is a random process at the core, it's kind of hard to test this stuff without just looking at the average each time.  I really just wanted to show that the basic logic was solid, so that we can have that assumption moving forward.  If I had the time, I would make far more dedicated unit tests, but the scope of this project is something that needs to be reigned in at least for a final submission.  It's definitely something that can be done in the future.
 
