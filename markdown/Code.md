@@ -341,9 +341,72 @@ This generates a color array such that we can distinguish the edges.  It also re
 
 #### generate_network.py unit testing
 
-....
+To start, the imports:
 
+```python
+import sys
+sys.path.insert(1, '../')
 
+from generate_network import *
+```
+
+Of course, since we're testing network generation we need that file, but `sys` is included so that we can reach it.  We begin by making sure that the network size is correct:
+
+##### test_network_size()
+
+```python
+N = 100
+p = 0.25
+
+G = Erdos_Renyi_GNP(N, p)
+
+assert(G.A.shape == (N, N))
+```
+
+A very simple, almost too simple test, but it at least makes sure that nothing was messed up in the many moving parts of this process.   We want to also make sure that our edges are within the anticipated range:
+
+##### test_edge_numbers()
+
+```python
+bar_m = lambda N, p: N*(N - 1)/2 * p
+std_m = lambda N, p: 0.10 * bar_m(N, p)
+
+assert((G.M < bar_m(N, p) + std_m(N, p)) and (G.M > bar_m(N, p) - std_m(N, p)))
+
+for _ in range(100):
+    G1 = Erdos_Renyi_GNP(N, p)
+    assert((G1.M < bar_m(N, p) + std_m(N, p)) and (G1.M > bar_m(N, p) - std_m(N, p)))
+```
+
+Since there's not exactly a closed form for the standard deviation that I could find, I just set it to be 10% of the expected number of edges.  Then, we check to see that this works for our initial graph.
+
+Just to show that we weren't lucky, I also show this for 100 more randomly generated graphs. 
+
+We can also make sure that there is no overlap in the potential edges and actual edges:
+
+##### test_total_edges()
+
+```python
+assert(G.edges.shape[0] == G.M)
+assert(G.edges.shape[0] + G.potential_edges.shape[0] == G.N*(G.N - 1)/2)
+```
+
+We first make sure that there are no extra edges picked up anywhere, then test to make sure that the sum of the actual edges and potential edges is the total possible edges.  That way, we know that there's no overlap at the surface. 
+
+##### test_rewiring()
+
+Perhaps the most important test is to make sure that rewiring works - that is, it doesn't add one edge too many or remove one edge too many.  This way, we know that each addition and removal is successful.  We can do this by the following:
+
+```python
+M = G.M
+for _ in range(100):
+    G.rewire_graph()
+    assert(G.M == M)
+```
+
+Basically, every iteration we make sure that they're the same.  This means that the addition and removal have succeeded in some way *and* no self edges were added in the process.
+
+Note that none of these tests reflect the SBM - this is OK, they would be the exact same, anyway.  The real test of the SBM comes from testing entropy, since that's more of what it indicates.
 
 #### calculate_entropy.py
 
