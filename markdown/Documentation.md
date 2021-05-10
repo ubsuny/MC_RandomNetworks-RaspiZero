@@ -76,7 +76,7 @@ This is particularly useful to us in that this is the foundation of spectral ana
 
 #### Stochastic Block Model
 
-A stochastic block model (SBM) is a structure of graphs that describe random graphs.   Here, it is structured in such a way that the diagonal blocks of the random graph are the communities, so to speak, of these graphs and the off diagonals represent the edges connecting these communities together.  (CITE)
+A stochastic block model (SBM) is a structure of graphs that describe random graphs.   Here, it is structured in such a way that the diagonal blocks of the random graph are the communities, so to speak, of these graphs and the off diagonals represent the edges connecting these communities together [@sbm].
 
 More generally, we look at the case where all of the communities are equally sized; that is to say, the size of each community $n_k$ is defined by
 
@@ -104,7 +104,7 @@ $\bar{M} = \bar{M_{out}} + \bar{M_{in}}${#eq:description}
 
 with the reminder that we look at the expectation here, since forming a $G_{NP}$ is inherently random.  Overall, an SBM can be viewed as the superposition of several different random graphs of equal network size, but varying edge probabilities.  More intuitively, an SBM is analogous to, say, a typical physical partition problem.  
 
-Suppose each community represents a separate partition (CITE).  Each community edge then represents the potential that exists between two particles or nodes.  In a closed system, i.e. all $p_{out} = 0$, there is no energy exchange between the partitions, hence a lack of edges.  As such, as $p_{out}$ increases throughout overall the system, the more energy distribution that there is since the partitions are opened and now the separate communities are allowed to interact.
+Suppose each community represents a separate partition [@part].  Each community edge then represents the potential that exists between two particles or nodes.  In a closed system, i.e. all $p_{out} = 0$, there is no energy exchange between the partitions, hence a lack of edges.  As such, as $p_{out}$ increases throughout overall the system, the more energy distribution that there is since the partitions are opened and now the separate communities are allowed to interact.
 
 That is all that will be said for now.  Later, this will be elaborated upon.
 
@@ -116,9 +116,9 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 
 #### Spectral Analysis
 
-To begin, spectral analysis is the examination of eigenvalues from some arbitrary system (CITE).   Since we are dealing with graph structure, any spectral analysis deals primarily with that of the eigenvalues of the Laplacian matrix $L$ (CITE).   There are two types of the Laplacian we typically handle, the unnormalized Laplacian $L$ and the normalized Laplacian $L^{sym}$.  
+To begin, spectral analysis is the examination of eigenvalues from some arbitrary system [@spectral].   Since we are dealing with graph structure, any spectral analysis deals primarily with that of the eigenvalues of the Laplacian matrix $L$ [@dane].   There are two types of the Laplacian we typically handle, the unnormalized Laplacian $L$ and the normalized Laplacian $L^{sym}$.  
 
-Here, we'll only speak of the unnormalized Laplacian.  There is nothing particularly wrong with the normalized, it's just that the unnormalized appears more commonly in nature (CITE).  Then, the eigenvalues $\{\lambda_i\}$ and eigenvectors $\{\vec{v}\}$ can be found arbitrarily with any typical algorithm.
+Here, we'll only speak of the unnormalized Laplacian.  There is nothing particularly wrong with the normalized, it's just that the unnormalized appears more commonly in nature [@dane].  Then, the eigenvalues $\{\lambda_i\}$ and eigenvectors $\{\vec{v}\}$ can be found arbitrarily with any typical algorithm.
 
 In network theory, the eigenvalues by themselves are indicative of a few things.  The first, the edge probability and number of nodes.  This is because in a typical $G_{NP}$, the average eigenvalue floats around
 
@@ -130,21 +130,21 @@ $\bar{\lambda_i} = N \cdot p_{in}${#eq:description}
 
 assuming that each $p_{in}^{(k)}$ is of equal value.  This is because $p_{out}$, assuming that $p_{out}^{(k - 1, k)}$ is the same for all $k$, is more indicative of the community structure than the edge probabilities and nodes.  
 
-Speaking of which, we can determine, for a $G_{NP}$, how many communities there are by the number of zero eigenvalues (CITE).  Or more specifically
+Speaking of which, we can determine, for a $G_{NP}$, how many communities there are by the number of zero eigenvalues [@coms].  Or more specifically
 
 $k = |\{\lambda_i: \lambda_i = 0 \text{ for all } i \in N - 1\}|${#eq:description}
 
-Besides that, we often study how eigenvalues change under rewiring.  If, for example, we were examining a two community SBM and randomly rewire it such that it becomes a one community SBM, we would anticipate that the number of zero eigenvalues decreases from $2$ to $1$.  (CITE)
+Besides that, we often study how eigenvalues change under rewiring.  If, for example, we were examining a two community SBM and randomly rewire it such that it becomes a one community SBM, we would anticipate that the number of zero eigenvalues decreases from $2$ to $1$ [@coms].
 
-If examined on a much smaller scale, eigenvalues just in general give insight to the changing structure of the network.  It must be noted that we don't typically examine eigenvectors; this deals more with principal component analysis (PCA) (CITE) than, say, network theory's branch of spectral analysis.  
+If examined on a much smaller scale, eigenvalues just in general give insight to the changing structure of the network.  It must be noted that we don't typically examine eigenvectors; this deals more with principal component analysis (PCA) [@pca] than, say, network theory's branch of spectral analysis.  
 
 Of course, these can be examined, but there is no established theory to do so in the direction that this project is headed.  And, admittedly, I don't know about them to develop theory on my own.  
 
 Otherwise, spectral analysis tends to ascend its eigenvalues by going into a more scalable form - von Neumann Entropy.
 
-#### Von Neumann Entropy
+#### VNE
 
-Von Neumann Entropy (VNE) is but one way to interpret eigenvalues (CITE).  It originally comes from the equation of Shannon entropy (CITE) such that
+Von Neumann Entropy (VNE) is but one way to interpret eigenvalues.  It originally comes from the equation of Shannon entropy [@dane] such that
 
 $H = -\sum_i p_i \log p_i${#eq:description}
 
@@ -152,11 +152,11 @@ where $H$ is our entropy and $p_i$ is the probability of some event happening.  
 
 $\sum_i p_i = 1$ {#eq:description} 
 
-However, VNE takes this one step further by defining the probabilities as the trace of some density matrix, Tr($\rho$) (CITE), such that $\rho$ is the density matrix.  The entropy is then
+However, VNE takes this one step further by defining the probabilities as the trace of some density matrix, Tr($\rho$) [@dane] such that $\rho$ is the density matrix.  The entropy is then
 
 $H = - \text{Tr}(\rho)\log_2 \text{Tr}(\rho)${#eq:description}
 
-where base 2 comes from the binary representation of information (CITE).  Recent publications have claimed that Tr$(\rho)$ is really a function of the eigenvalues (CITE) such that 
+where base 2 comes from the binary representation of information [@2bit].  Recent publications have claimed that Tr$(\rho)$ is really a function of the eigenvalues [@dane] such that 
 
 $\text{Tr}(\rho)_i = \dfrac{\lambda_i}{2M}${#eq:description}
 
@@ -164,7 +164,7 @@ which would create an entropic model such that
 
 $H_M = -\sum_i \dfrac{\lambda_i}{2M}\log_2\dfrac{\lambda_i}{2M}${#eq:description}
 
-We denote $H_M$ as such, since it is an entropic model that depends on the number of edges.  Note that it is true (CITE)
+We denote $H_M$ as such, since it is an entropic model that depends on the number of edges.  Note that it is true [@dane]
 
 $\sum_i \dfrac{\lambda_i}{2M} = 1${#eq:description}
 
@@ -180,7 +180,7 @@ Because of this, data scientists sought to find a better entropy model; one that
 
 $H_\beta = -\sum_i \dfrac{e^{-\beta \lambda_i}}{Z} \log_2 \dfrac{e^{-\beta \lambda_i}}{Z}$ {#eq:description}
 
-Here, $Z$ is the partition function (CITE) from statistical mechanics such that
+Here, $Z$ is the partition function [@manlio] from statistical mechanics such that
 
 $Z = \sum_je^{-\beta \lambda_j}${#eq:description}
 
@@ -188,11 +188,11 @@ where $\beta$ is some time-scale parameter.  Because of this parameter, we denot
 
 $\beta = \dfrac{1}{k_BT}${#eq:description}
 
-where $k_B$ is the Boltzmann constant and $T$ is the system temperature.  However, here it refers to the time domain as opposed to the energy domain, especially since we're dealing with information theory here.   Via quantum mechanics, this makes sense since energy and time cannot be known simultaneously (CITE), so in a way this is the complement to the energy-based parameter.
+where $k_B$ is the Boltzmann constant and $T$ is the system temperature.  However, here it refers to the time domain as opposed to the energy domain, especially since we're dealing with information theory here.   Via quantum mechanics, this makes sense since energy and time cannot be known simultaneously [@uncertain], so in a way this is the complement to the energy-based parameter.
 
-Regardless, it is apparently that $\sum_i \dfrac{e^{-\beta \lambda_i}}{Z} = 1$, since $Z$ is but the total of all of the denominator.  This model of entropy in particular is great for community detection [@manlio].  That is to say, for a dense enough network with community structure, an SBM for example, the entropy approximates to the following form (CITE):
+Regardless, it is apparently that $\sum_i \dfrac{e^{-\beta \lambda_i}}{Z} = 1$, since $Z$ is but the total of all of the denominator.  This model of entropy in particular is great for community detection [@manlio].  That is to say, for a dense enough network with community structure, an SBM for example, the entropy approximates to the following form:
 
-$H_\beta \approx \log_2 k$
+$H_\beta \approx \log_2 k${#eq:description}
 
 For example, a dense $G_{NP}$ with no community structure will evaluate to zero entropy.  However, totally independent nodes, that is to say $k = N$, will evaluate to maximal entropy, or the maximum number of communities.  As such, it is apparent how this could be useful in community detection.  This is where the model breaks away from the older model; it can detect community effortlessly giving it purpose above determining matrix density.
 
@@ -206,7 +206,7 @@ The way that we rank edges is a rather simple process.  To begin, removing one e
 
 $H_{\beta}^{(t)}${#eq:description}
 
-such that it reflects the change in the Laplacian.  However, for this we only deal with one removal.  This is because after we remove the edge and calculate its entropy, we return the graph to its initial state.  The goal is to calculate the entropy of each individual edge removal, as opposed to procedurally bringing the graph down to zero edges (CITE).  
+such that it reflects the change in the Laplacian.  However, for this we only deal with one removal.  This is because after we remove the edge and calculate its entropy, we return the graph to its initial state.  The goal is to calculate the entropy of each individual edge removal, as opposed to procedurally bringing the graph down to zero edges [@ranks].  
 
 Therefore, the process is as follows:
 
@@ -218,11 +218,11 @@ Therefore, the process is as follows:
 
 The main consideration is that we only have to do this for the upper triangular or lower triangular of the graph because, due to symmetry, the edge $(1, 2)$ for example will have the same entropy as $(2, 1)$.  This is a nice feature of undirected graphs.  Once we have collected the set of entropies for all individual edge removals, we can then sort them from greatest to least such that the edge with the lowest ranking (meaning most important) would have the highest entropy.
 
-The logic for this is that an edge removal will cause a change in the eigenvalues.  If this removal entropy is low, then it has not perturbed the structure of the eigenvalues.  However, the higher that this entropy is (a reminder that this is relative to the base entropy) the more that the eigenvalue structure has been perturbed.  As such, we treat the edges that generate the most entropy as the most important edge as it implies some deep structural connection to the system (CITE).
+The logic for this is that an edge removal will cause a change in the eigenvalues.  If this removal entropy is low, then it has not perturbed the structure of the eigenvalues.  However, the higher that this entropy is (a reminder that this is relative to the base entropy) the more that the eigenvalue structure has been perturbed.  As such, we treat the edges that generate the most entropy as the most important edge as it implies some deep structural connection to the system [@ranks].
 
-The application of edge ranking to a single-community $G_{NP}$ is not particularly interesting; there is not really a community structure to be squeezing insight out of.  Rather, looking for something is really just the Jesus in the toast phenomena (CITE).  However, for $k \geq 2$, there certainly exists a distinction between community and connecting edges.  Because of that, edge ranking in an ideal scenario would be able to distinguish between community and connecting edges without any prior impetus.  In saying this, we mean that without any bias the entropy model should be able to identify the two different edge types.  There is no citation here, as it is currently ongoing research, unpublished.
+The application of edge ranking to a single-community $G_{NP}$ is not particularly interesting; there is not really a community structure to be squeezing insight out of.  Rather, looking for something is really just the Jesus in the toast phenomena [@toast].  However, for $k \geq 2$, there certainly exists a distinction between community and connecting edges.  Because of that, edge ranking in an ideal scenario would be able to distinguish between community and connecting edges without any prior impetus.  In saying this, we mean that without any bias the entropy model should be able to identify the two different edge types.  There is no citation here, as it is currently ongoing research, unpublished.
 
-Hence, the beauty of the $H_\beta$ model is as such.  In entangled systems, it can tell us the most important edges and we can work backwards to understand the community structure of rather implicit networks.  The brain, as one example, where the community boundaries are not clearly defined  (CITE).  Or, in somewhat recent years, a Congressional network (CITE), where we can confirm party lines as the two communities (CITE).  In either instance, this entropy model is intensely powerful for a well-defined network.
+Hence, the beauty of the $H_\beta$ model is as such.  In entangled systems, it can tell us the most important edges and we can work backwards to understand the community structure of rather implicit networks.  The brain, as one example, where the community boundaries are not clearly defined  [@brain].  Or, in somewhat recent years, a Congressional network [@congress], where we can confirm party lines as the two communities.  In either instance, this entropy model is intensely powerful for a well-defined network.
 
 The one caveat to this model is that it depends intrinsically on the time-scale parameter $\beta$.  This parameter determines the hierarchy of the edges, seemingly independent of the actual eigenvalues.  For example, when $\beta$ is infinitely small, our $H_\beta \approx H_M$.  We can use a Taylor expansion to show this:
 
@@ -266,9 +266,9 @@ Of course, computers can only handle so large a $\beta$, so this is purely a the
 
 Since a $G_{NP}$ and, by extension, an SBM are inherently random in nature, there exists permutations for any given configuration.  That is to say for an initial $N$ and $p$, a graph can be rearranged in finite ways while still preserving the qualities.  As such, there emerges an application of Monte Carlo analysis to first validate known quantities and then, after knowing that the Monte Carlo simulations are valid, using it to validate behavior expectations.  
 
-Taking a step back, Monte Carlo simulations, named after the location in Monaco, is a set of methods to try and quantify random processes (CITE).  Or, more simply, we group together random behavior such that we can potentially classify it by its average.  This is particularly useful in cases where the phenomena doesn't necessarily have a closed form solutions.  One such practical application of this is integrals; not all integrals can be described easily in algebraic terms.  So, a Monte Carlo simulation can be used to find an approximate solution to this calculus (CITE).
+Taking a step back, Monte Carlo simulations, named after the location in Monaco, is a set of methods to try and quantify random processes [@mc].  Or, more simply, we group together random behavior such that we can potentially classify it by its average.  This is particularly useful in cases where the phenomena doesn't necessarily have a closed form solutions.  One such practical application of this is integrals; not all integrals can be described easily in algebraic terms.  So, a Monte Carlo simulation can be used to find an approximate solution to this calculus [@integral].
 
-The real catch here, however, is that Monte Carlo simulations become increasingly better at describing the phenomena as the sample size increases.  That it so say, the data being averaged over will be nearly accurate if there are infinitely many iterations.  As the number of iterations increases, the accuracy asymptotically approaches zero (CITE).  Unfortunately, due to computer limitations such as machine precision, eventually the most accurate of systems will fall apart from the computer not being able to carry about basic arithmetic properly.  So, there exists a iteration-accuracy tradeoff such that there needs to be decided a number of iterations where the accuracy doesn't fall under machine precision.  This, however, is not the goal of this project.
+The real catch here, however, is that Monte Carlo simulations become increasingly better at describing the phenomena as the sample size increases.  That it so say, the data being averaged over will be nearly accurate if there are infinitely many iterations.  As the number of iterations increases, the accuracy asymptotically approaches zero.  Unfortunately, due to computer limitations such as machine precision, eventually the most accurate of systems will fall apart from the computer not being able to carry about basic arithmetic properly.  So, there exists a iteration-accuracy tradeoff such that there needs to be decided a number of iterations where the accuracy doesn't fall under machine precision.  This, however, is not the goal of this project.
 
 Rather, our use of Monte Carlo simulations here, as aforementioned, are to first validate known quantities.  For example, we can use Monte Carlo simulations to validate that
 
@@ -302,9 +302,9 @@ Nevertheless, it is the amount of information that can be gleaned from network t
 
 DISCUSS RESULTS
 
-So, now that all of the outstanding issues have been addressed, where would I see this project going? Foremost, it would be good to develop models for different types of random networks, such as a multilayer network [@multilayer] or scale-free network (CITE).   Both certainly appear in nature; arguably more so than an SBM, since a typical SBM has rather fixed constraints in terms of community size.
+So, now that all of the outstanding issues have been addressed, where would I see this project going? Foremost, it would be good to develop models for different types of random networks, such as a multilayer network [@multilayer] or scale-free network [@scalefree]   Both certainly appear in nature; arguably more so than an SBM, since a typical SBM has rather fixed constraints in terms of community size.
 
-After that? I would like to apply this to real physical data.  One such example of something with rich community structure can be found in biology or chemistry.  What I refer to here is really any large molecule (CITE).  With initial conditions, the actual bond energies can be calculated such that we can form something with visible community structure.   The main reason that I wasn't able to apply this here is that, since this is designed for the Raspberry Pi Zero W, the space limitations are fairly obvious.  You can look at the protein database (CITE) and see that much of these molecules are in the thousands, if not tens of thousands, of atoms or what we would classify as the nodes.
+After that? I would like to apply this to real physical data.  One such example of something with rich community structure can be found in biology or chemistry.  What I refer to here is really any large molecule [@mol].  With initial conditions, the actual bond energies can be calculated such that we can form something with visible community structure.   The main reason that I wasn't able to apply this here is that, since this is designed for the Raspberry Pi Zero W, the space limitations are fairly obvious.  You can look at the protein database (https://www.rcsb.org/) and see that much of these molecules are in the thousands, if not tens of thousands, of atoms or what we would classify as the nodes.
 
 Otherwise, I think that this was a clear success.  There exists now a rather evident bridge between the information-theoretic world and some of the most classical of physics problems, namely the partition problem that pops up in statistical mechanics and thermodynamics.  Interestingly enough, those problems also deal in entropy, but a kind different from the one described here.  Regardless, this was enjoyable and I look forward to studying this more as I ascend the academic ranks.
 
