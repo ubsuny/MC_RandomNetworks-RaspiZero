@@ -6,7 +6,7 @@ The purpose of this document is to explain all of the code found throughout the 
 
 
 
-#### generate_networks.py
+#### generate_network.py
 
 The only item here, the class, is here to store all of the network properties and to include its basic methods, mostly that of rewiring.   Of course, the imports come first:
 
@@ -339,9 +339,103 @@ locs = colors == in_color
 
 This generates a color array such that we can distinguish the edges.  It also returns the location of these edges in a Boolean array so that we can use this with edge ranking.  Effectively, if the `self.in_mask` is $1$ at a location, then it must be a community edge.  Otherwise, it's a connecting edge.
 
-#### unit testing
+#### generate_network.py unit testing
 
 ....
+
+
+
+#### calculate_entropy.py
+
+As always, imports come at the beginning of the file:
+
+```python
+from numpy import argsort, argwhere, exp, isnan, log, zeros
+from numpy.linalg import eigh
+from scipy.special import xlogy
+```
+
+The new special library here is the `scipy.special` import.  We use this over the `numpy` log function because it doesn't throw an error message for $0\log_2 0$, which is what we want.  Regardless, we begin with the classic model.
+
+##### m_entropy()
+
+The code for this is as follows:
+
+```python
+M = G.M
+eigenvalues = G.eigenvalues
+
+f = eigenvalues / (2*M)
+
+H = -xlogy(f, f)/log(2)
+H[isnan(H)] = 0
+```
+
+This is really just following the formula defined in Documentation.md.  The main difference here is that we remove `NaN` values with the line `H[isnan(H)] = 0` - basically, wherever the arrays are undefined we just set the value to be $0$.  We then return this array so that we can choose to sum it ourselves, or look at the entropy for each eigenvalue.  We do something similar for the other entropy model.
+
+##### b_entropy()
+
+```python
+eigenvalues = G.eigenvalues
+    
+f = exp(-beta*eigenvalues)
+f /= f.sum()
+
+H = -xlogy(f, f)/log(2)
+H[isnan(H)] = 0
+```
+
+Same idea here - we follow the formula then get rid of the `NaN` values.  This section really isn't complicated.  Let's move onto something more complicated!
+
+##### edge_rankings()
+
+This is the bread and butter of the experiment.  Basically, we remove an edge, calculate the entropy, then restore the edge.  Or, in code:
+
+```python
+Hs = zeros((G.edges.shape[0]))
+    
+for idx, edge in enumerate(G.edges):
+        
+	jdx = argwhere(edge == G.edges)
+
+    A = G.edge_removal(edge, jdx)
+
+    G.update_laplacian()
+    Hs[idx] = b_entropy(G, beta = beta).sum()
+    G.edge_addition(edge, jdx, A)
+        
+edge_sort = argsort(-Hs)
+    
+edge_ranks = argsort(edge_sort)
+```
+
+We start by initializing an entropy array for each edge.  Then, we iterate over all of the edges and find out where that edge is.  We use this to remove the edge, calculate the entropy, and then store that entropy.  After that, we restore it.  This is somewhat like rewiring, except the edge isn't moved.  
+
+Once all of the entropies have been collected, we sort them with `argsort` in descending order (i.e., the highest entropy appears at top).  To get the actual numerical ranks, we sort the `edge_sort`.  Both of these last variables are returned.
+
+##### top_ranked()
+
+Now, we want to find out the proportion of connecting edges that are top ranked, to support our theory in Documentation.md:
+
+```python
+cutoff_idx = int(cutoff*sorts.shape[0])
+if cutoff_idx == sorts.shape[0]:
+    is_connecting = ~locs[sorts]
+else:
+    is_connecting = ~locs[sorts][:cutoff_idx]
+    
+is_connecting = is_connecting.sum()/is_connecting.shape[0]
+```
+
+Note that `cutoff_idx` is just how many first element we choose, since the ranks are already sorted such that the top are at the front and the bottom are at the back.  Then, if the `cutoff_idx` is really just the entire array, then we take the entire array as our initial `is_connecting`.  Otherwise, we take it up until this index.  
+
+Since `locs` is a Boolean array, taking the negated sum of it will produce the number of connecting edges in that range.  Then, we just divide it by the total possible elements in that range, giving us the proportion of top ranked edges that are connecting in that percentile. 
+
+
+
+#### calculate_entropy.py unit testing
+
+
 
 #### TO BE CONTINUED....
 
