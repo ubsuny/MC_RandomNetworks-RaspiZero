@@ -56,4 +56,3 @@ def test_rewiring_entropy():
             assert(H1 < H0)
             H0 = H1
 
-test_rewiring_entropy()
