@@ -463,15 +463,14 @@ This is the bread and butter of the experiment.  Basically, we remove an edge, c
 ```python
 Hs = zeros((G.edges.shape[0]))
     
-for idx, edge in enumerate(G.edges):
+for idx, edge in enumerate(G.edges.copy()):
         
-	jdx = argwhere(edge == G.edges)
-
-    A = G.edge_removal(edge, jdx)
+	A = G.edge_removal(edge, 0)
 
     G.update_laplacian()
     Hs[idx] = b_entropy(G, beta = beta).sum()
-    G.edge_addition(edge, jdx, A)
+    G.edge_addition(edge, Hs.shape[0] - 1, A)
+    G.update_laplacian()
         
 edge_sort = argsort(-Hs)
     
