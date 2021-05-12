@@ -284,7 +284,37 @@ Regardless, once this established we can set up a framework for a toy model expe
 
 ### Potential Applications to Real Physics
 
+To understand how this may apply to real physics, first consider the classic partition problem in statistical mechanics (CITE).  Here, we have, as an example, a square-shaped box with two separate partitions.  In each partition, there are $$\frac{N}{2}$$ indistinguishable particles.   Each particle in the separate partition has some potential energy $U_i$, where $i$ is a unique identifier for that particle.  So, for example, the first particle would have a potential energy $U_i$.  
 
+Therefore, the potential energy of each partition would then be
+
+$$U_1 = \sum_{i = 1}^{\frac{N}{2}} U_i$${#eq:description}
+
+and 
+
+$U_2 = \sum_{i = \frac{N}{2} + 1}^{N} U_i${#eq:description}
+
+As such, the total energy of the system would then just be
+
+$U = \sum_{i = 1}^k U_i$ {#eq:description}
+
+Since the value of an edge is really how closely related two particles are to each other, we can make the analogy that
+
+$A_{ij} = \dfrac{U_i + U_j}{2}${#eq:description}
+
+such that $U_{i} \neq U_{j}$.  Or, thinking in terms of graph theory, that there are no self edges.  We can also generalize this as a piecewise:
+
+$A_{ij} = \begin{cases} 0 & i = j \\ \dfrac{U_i + U_j}{2} & i \neq j\end{cases}${#eq:description}
+
+Note that these aren't researched claims; just thoughts I've come to myself by my experience in network theory.   Now, with the edge weights defined, we really have a network such that an edge exists if there's a potential for them to interact.  If there's a potential for them to interact, that means they're able to collide and exchange energy.  So, in the original two partition system, none of the off diagonal entries should have an edge, as they have no potential to interact.  Really, then, the density of the graph should never change assuming that this system is closed.  Instead, nodes, or particles, can accumulate energy from their interactions with other particles.  
+
+Because of this, the way that we can introduce the notion of spreading energy is via rewiring; that is to say, rewiring typically refers to the relocation of one edge.  But if we view this on a time scale, then we can treat rewiring really as the displacement of energy after some kind of exchange.  
+
+Therefore, if we only rewire within communities, then the energy won't exchange whatsoever; the systems will remain distinguishable by virtue of not interacting with each other.  However, if we start allowing particles from different partitions to interact with each other, then eventually their energy will start to spread between the partitions, the communities.  So, in a long time scale, you would eventually expect that the system goes from two partitions to one; that is to say, the energy systems are no longer distinguishable.  
+
+Hence, this is my proposal.  We can effectively observe energy exchange over time and observe that it does in fact behave this way.  Since that by itself is mundane, we can also observe which edges, or particle interactions, are most important to energy transfer.  We'll ideally find that in low rewiring the connecting edges are most important.  Really, when the two systems are indistinguishable, it is the few particles traveling between the two that allow for energy to exchange at all.  However, as rewiring approaches the infinite, we would anticipate that no edge inherently has preference; when it's really one massive energy system, there's too much chaos to really pull apart any conclusions.
+
+Ultimately, to tie it all together, we can take the top percentage of edge rankings and see how much of these are the connecting edges.  This will give us a direct insight into how the potential behaves.
 
 ### Results
 
