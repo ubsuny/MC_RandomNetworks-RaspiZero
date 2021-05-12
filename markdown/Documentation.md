@@ -284,7 +284,7 @@ Regardless, once this established we can set up a framework for a toy model expe
 
 ### Potential Applications to Real Physics
 
-To understand how this may apply to real physics, first consider the classic partition problem in statistical mechanics (CITE).  Here, we have, as an example, a square-shaped box with two separate partitions.  In each partition, there are $$\frac{N}{2}$$ indistinguishable particles.   Each particle in the separate partition has some potential energy $U_i$, where $i$ is a unique identifier for that particle.  So, for example, the first particle would have a potential energy $U_i$.  
+To understand how this may apply to real physics, first consider the classic partition problem in statistical mechanics [@parts].  Here, we have, as an example, a square-shaped box with two separate partitions.  In each partition, there are $$\frac{N}{2}$$ indistinguishable particles.   Each particle in the separate partition has some potential energy $U_i$, where $i$ is a unique identifier for that particle.  So, for example, the first particle would have a potential energy $U_i$.  
 
 Therefore, the potential energy of each partition would then be
 
@@ -314,9 +314,7 @@ Therefore, if we only rewire within communities, then the energy won't exchange 
 
 Hence, this is my proposal.  We can effectively observe energy exchange over time and observe that it does in fact behave this way.  Since that by itself is mundane, we can also observe which edges, or particle interactions, are most important to energy transfer.  We'll ideally find that in low rewiring the connecting edges are most important.  Really, when the two systems are indistinguishable, it is the few particles traveling between the two that allow for energy to exchange at all.  However, as rewiring approaches the infinite, we would anticipate that no edge inherently has preference; when it's really one massive energy system, there's too much chaos to really pull apart any conclusions.
 
-Ultimately, to tie it all together, we can take the top percentage of edge rankings and see how much of these are the connecting edges.  This will give us a direct insight into how the potential behaves.
-
-### Results
+Ultimately, to tie it all together, we can take the top percentage of edge rankings and see how much of these are the connecting edges.  This will give us a direct insight into how the potential behaves. 
 
 ### Comparison to other Methods
 
@@ -330,7 +328,7 @@ Nevertheless, it is the amount of information that can be gleaned from network t
 
 ### Conclusion
 
-DISCUSS RESULTS
+Our results were pretty whelming, I'd say.  Everything behaved exactly as anticipated; one thing that would be interesting is to randomly assign edge weights and then try this same experiment out.  Or, try different cutoff percentages.  There's a lot of ways that the experiment can go from here.
 
 So, now that all of the outstanding issues have been addressed, where would I see this project going? Foremost, it would be good to develop models for different types of random networks, such as a multilayer network [@multilayer] or scale-free network [@scalefree]   Both certainly appear in nature; arguably more so than an SBM, since a typical SBM has rather fixed constraints in terms of community size.
 
