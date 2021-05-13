@@ -110,7 +110,27 @@ That is all that will be said for now.  Later, this will be elaborated upon.
 
 #### Rewiring
 
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+Graphs are not static objects.  That is to say, graphs can undergo changes in any kind of space.  One of these operations is rewiring.  At the surface level, rewiring is just the relocation of an edge to another position in the graph.  We can think of this with a simple analogy. 
+
+Suppose you have a best friend, Mudasir.  There would then be an edge connecting you and Mudasir.  Then suppose he breaks your heart, almost devastatingly.  You and Mudasir are no longer friends, so the edge between you two has been removed.  While dealing with heartbreak, a new person emerges:  Salman.  Salman? He's perfect, the friend that you always had wanted.  And as such, when you and him finally become friends a new edge forms between you and Salman.  Sound familiar? I'm really just rehashing [this meme](https://knowyourmeme.com/memes/friendship-ended-with-mudasir).  
+
+Regardless, we can break this down into two operations:  first, the removal of an edge, or the "losing Mudasir" part of the story.  This affects the graph as the following:
+
+$\Delta L_{ij} = L_{ij}^{(1)} - L_{ij}^{(0)} = \begin{cases} 1 & i = j \\ -1 & i \neq j\end{cases}${#eq:description}
+
+such that $L_{ij}^{(1)}$ represents the change to the Laplacian after $1$ removal and $L_{ij}^{(0)}$ represents the change to the Laplacian after $0$ removals [@dane].  Because of this, $\Delta L_{ij}$ is just the change in the Laplacian under this operation.  As for the adjacency matrix, $A$, all this really does is that it changes an existing edge to $0$.  Really, the only places of the matrix structure can be changed are the values such that $A_{ij} > 0$.  Since there's symmetry in the graph, we have to modify both $A_{ij}$ and $A_{ji}$.  
+
+After removal, there is then addition.  This is the "befriending Salman" part of the story.  In terms of how this changes the graph, consider the following:
+
+$\Delta L_{ij} = L_{ij}^{(1)} - L_{ij}^{(0)} = \begin{cases} 1 & i = j \\ -1 & i \neq j\end{cases}${#eq:description}
+
+This makes sense.  It's basically the "inverse" to removal.  We can then define the total change to the Laplacian as
+
+$\Delta L = \vec{\Delta L_{ij}^{(r)}} + \vec{\Delta L_{ij}^{(a)}}${#eq:description}
+
+so that $(r)$ denotes removal and $(a)$ denotes addition [@dane].  
+
+Ultimately, the main takeaway from rewiring is that it does modify the graph structure.   Because of this, there exists changes to things under the surface of the matrix structure.  One of these? The eigenvalues.
 
 ### Von Neumann Entropy
 
