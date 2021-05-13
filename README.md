@@ -36,4 +36,4 @@ Although this is designed for the Raspberry Pi Zero W, this can be ran on other 
 
 Midterm: https://www.youtube.com/watch?v=aFxdBRfqHU4
 
-Final: for the final submission.
+Final: https://youtu.be/wMAmBYv9KLo
